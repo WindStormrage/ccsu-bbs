@@ -52,6 +52,7 @@ export default class Sycn {
       })
   }
   UPLOAD(path, file, filename = 'file', param = {}) {
+    const url = this.prefix + path;
     var data = new FormData()
     data.append(filename, file)
     if (Object.keys(param).length > 0) {
@@ -59,7 +60,7 @@ export default class Sycn {
         data.append(key, param[key])
       })
     }
-    return fetch(path, {
+    return fetch(url, {
       method: 'POST',
       body: data
     })
