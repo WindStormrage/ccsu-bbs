@@ -32,7 +32,7 @@ export default {
       var input = document.querySelector('input[type="file"]')
       console.log(input.files[0]);
       if(input.files[0]) {
-        sync.UPLOAD('', input.files[0], 'img', {
+        sync.UPLOAD('/api/uploadImage', input.files[0], 'file', {
           user: 'xhy'
         })
           .then(data => {

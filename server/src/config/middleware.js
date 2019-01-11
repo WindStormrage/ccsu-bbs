@@ -18,6 +18,14 @@ module.exports = [
     }
   },
   {
+    handle: 'resource',
+    enable: isDev,
+    options: {
+      root: path.join(think.ROOT_PATH, 'runtime'),
+      publicPath: /^\/(upload|static|)/
+    }
+  },
+  {
     handle: 'trace',
     enable: !think.isCli,
     options: {
@@ -28,7 +36,7 @@ module.exports = [
     handle: 'payload',
     options: {
       keepExtensions: true,
-      limit: '5mb'
+      limit: '1mb'
     }
   },
   {

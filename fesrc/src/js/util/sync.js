@@ -24,7 +24,8 @@ export default class Sycn {
     // const url = 'http://www.xiedashuaige.cn:3000/article?id=1';
     const url = this.prefix + path;
     return fetch(url, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include' // 强制加入凭据头
     })
       .then((response) => {
         if(response.ok) {
@@ -40,7 +41,8 @@ export default class Sycn {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(param)
+      body: JSON.stringify(param),
+      credentials: 'include' // 强制加入凭据头
     })
       .then(response => {
         if(response.ok) {
@@ -50,7 +52,6 @@ export default class Sycn {
       })
   }
   UPLOAD(path, file, filename = 'file', param = {}) {
-    path = 'http://www.xiedashuaige.cn:8080/api/admin/file/upload';
     var data = new FormData()
     data.append(filename, file)
     if (Object.keys(param).length > 0) {
