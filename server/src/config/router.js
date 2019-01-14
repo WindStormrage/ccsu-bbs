@@ -1,3 +1,4 @@
 module.exports = [
-  ['/uploadImage', 'common/uploadImage']
+  ['/uploadImage', 'common/uploadImage'],
+  ['/login', 'user/login']
 ];
