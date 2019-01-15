@@ -36,13 +36,13 @@ exports.model = {
   },
   mysql: {
     handle: mysql,
-    database: '',
-    prefix: 'think_',
+    prefix: '',
+    database: 'ccsu_bbs',
     encoding: 'utf8',
     host: '127.0.0.1',
-    port: '',
+    port: '3306',
     user: 'root',
-    password: 'root',
+    password: 'xiehanyang33',
     dateStrings: true
   }
 };
