@@ -36,7 +36,7 @@ export default class Sycn {
   }
   POST(path, param = {}) {
     const url = this.prefix + path;
-    fetch(url, {
+    return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
