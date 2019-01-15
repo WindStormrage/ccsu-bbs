@@ -6,7 +6,7 @@ const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 ren
 module.exports = class extends Base {
   constructor(...args) {
     super(...args);
-    this.userModel = this.model('user');
+    this.emailConfModel = this.model('email_conf');
   }
   /**
    * 上传图片
@@ -26,5 +26,15 @@ module.exports = class extends Base {
       });
     }
     return this.fail(1000, '上传失败!');
+  }
+  /**
+   * 发送邮件
+   */
+  async sendMailAction() {
+    const emailTo = this.post('emailTo');
+    const title = this.post('title');
+    const html = this.post('html');
+    const data = await this.emailConfModel.sendMail({emailTo, title, html});
+    return this.success(data);
   }
 };
