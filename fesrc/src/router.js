@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import login from './pages/login.vue'
@@ -19,8 +18,6 @@ import adminPermission from './components/admin/permission.vue'
 import adminList from './components/admin/list.vue'
 
 import NotFoundComponent from './pages/404.vue'
-
-Vue.use(VueRouter);
 
 export default new VueRouter({
   mode: 'history',
