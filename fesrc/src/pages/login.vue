@@ -38,10 +38,11 @@
                 margin-top: 20px;
             }
             .vInput {
-                width: 100px;
+                width: 80px;
                 float: left;
             }
             .sendEmailBtn {
+                width: 120px;
                 float: right;
             }
         }
@@ -168,16 +169,27 @@ export default {
                     { required: true, message: '请输入邮箱验证码', trigger: 'change' },
                 ]
             },
-            sendEmailBtnTexts: ['点击获取', '秒后重新获取', '重新获取'],
             sendEmailStatus: 0,
             sendEmailBtnText: '点击获取',
-            sendEmailBtnDisabled: true
+            sendEmailBtnDisabled: true,
+            sendEmailInterval: null,
+            sendEmailTime: 0,
         }
     },
     mounted() {
         this.sendEmailBtnText = '点击获取';
         this.sendEmailStatus = 0;
         this.sendEmailBtnDisabled = true;
+    },
+    watch: {
+        'signUp.email'(val, oldVal) {
+            // 当邮箱不为空的时候而且获取没有倒计时的时候才变成可以点
+            if (val != '' && (new Date().getTime() - this.sendEmailTime) > 60000) {
+                this.sendEmailBtnDisabled = false;
+            } else {                
+                this.sendEmailBtnDisabled = true;
+            }
+        } 
     },
     methods: {
         // 改变tab的时候调用
@@ -203,7 +215,27 @@ export default {
         },
         // 点击发送邮件
         sendEmail() {
-
+            // 如果是第一次点击的话
+            if (this.sendEmailStatus === 0 || this.sendEmailStatus === 2) {
+                this.sendEmailStatus = 1;
+                this.sendEmailBtnDisabled = true;
+                this.sendEmailTime = new Date().getTime();
+                // 设置倒计时,倒计时结束变成2
+                this.sendEmailInterval = setInterval(() => {
+                    const hadTime = 60 - (new Date().getTime() - this.sendEmailTime) / 1000;
+                    this.sendEmailBtnText = `重新获取(${parseInt(hadTime)})`;
+                    if (hadTime < 0) {
+                        clearInterval(this.sendEmailInterval);
+                        this.sendEmailStatus = 2;
+                        this.sendEmailBtnText = `重新获取`;
+                        // 这里还要看一下是不是空
+                        if (this.signUp.email != '') {
+                            this.sendEmailBtnDisabled = false;
+                        }
+                    }
+                }, 100);
+                // 调用发送邮件的接口
+            }
         }
     },
 }
