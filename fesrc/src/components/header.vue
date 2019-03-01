@@ -70,7 +70,8 @@
         }
         .list {
             margin-top: 50px;
-            li {
+            .link {
+                display: block;
                 height: 50px;
                 width: 100%;
                 font-size: 16px;
@@ -81,6 +82,7 @@
                 margin-top: -1px;
                 cursor: pointer;
                 transition: .5s;
+                color: #000;
                 &:hover {
                     background-color: #a1c4fd;
                     color: #fff;
@@ -112,13 +114,13 @@
                 <span class="comment">回帖数：456</span>
             </div>
             <ul class="list">
-                <li>首页</li>
-                <li>管理系统</li>
-                <li>我的帖子</li>
-                <li>我的回帖</li>
-                <li>我的消息</li>
-                <li>修改资料</li>
-                <li>退出登录</li>
+                <router-link class="link" to="/home">首页</router-link>
+                <router-link class="link" to="/admin">管理系统</router-link>
+                <router-link class="link" to="/user/post">我的帖子</router-link>
+                <router-link class="link" to="/user/comment">我的回帖</router-link>
+                <router-link class="link" to="/user">我的消息</router-link>
+                <router-link class="link" to="/user/setting">修改资料</router-link>
+                <router-link class="link" to="/loginout">退出登录</router-link>
             </ul>
         </Drawer>
     </div>
