@@ -29,6 +29,9 @@
             }
         }
     }
+    .backTop {
+        right: 280px !important;
+    }
 }
 </style>
 <template>
@@ -52,6 +55,7 @@
                 发送自我介绍到本站邮箱ccsu_bbs@xiedashuaige.cn
             </p>
         </div>
+        <BackTop class="backTop"></BackTop>
     </div>
 </template>
 <script>
