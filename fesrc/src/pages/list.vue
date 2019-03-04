@@ -53,9 +53,9 @@
                     
                 </el-tab-pane>
             </el-tabs>
+            <text-editor></text-editor>
         </div>
         <right-msg></right-msg>
-        <text-editor></text-editor>
     </div>
 </template>
 <script>
