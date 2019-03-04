@@ -32,7 +32,7 @@
     <h1 class="title">发帖</h1>
     <div class="titleInput">
       <label class="label">标题</label>
-      <el-input class="input" v-model="input" placeholder="请输入标题"></el-input>
+      <el-input class="input" v-model="title" placeholder="请输入标题"></el-input>
     </div>
     <quill-editor
       v-model="content"
@@ -84,7 +84,8 @@ export default {
           }
         }
       },
-      anonymous: false
+      anonymous: false,
+      title: ''
     };
   },
   // manually control the data synchronization
