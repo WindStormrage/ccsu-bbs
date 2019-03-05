@@ -2,16 +2,19 @@
     .container {
         width: calc(100% - 400px);
         float: left;
-        padding: 30px;
-        .el-menu-item {
-            padding: 0;
-            margin: 0 30px;
-            a {
-                display: inline-block;
-                height: 100%;
-                width: 100%;
-                padding: 0 20px;
-                font-size: 22px;
+        padding: 30px 20px 30px 70px;
+        .el-menu {
+            margin-bottom: 20px;
+            .el-menu-item {
+                padding: 0;
+                margin: 0 30px;
+                a {
+                    display: inline-block;
+                    height: 100%;
+                    width: 100%;
+                    padding: 0 20px;
+                    font-size: 22px;
+                }
             }
         }
     }
@@ -41,7 +44,7 @@
     <div>
         <Header></Header>
         <div class="container">
-            <el-menu :default-active="activeTab" class="el-menu-demo" mode="horizontal" @select="tebClick">
+            <el-menu :default-active="activeTab" class="el-menu" mode="horizontal" @select="tebClick">
                 <el-menu-item index="userPost"><router-link to="post">我的帖子</router-link></el-menu-item>
                 <el-menu-item index="userComment"><router-link to="comment">我的回帖</router-link></el-menu-item>
                 <el-menu-item index="userInformation"><router-link to="information">我的消息</router-link></el-menu-item>
