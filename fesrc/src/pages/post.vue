@@ -116,13 +116,13 @@
                         </div>
                         <div class="footer">
                             <span class="msg">一楼&nbsp;&nbsp;&nbsp;2018-11-22 09:51:14</span>
-                            <el-button class="comment" type="text">回帖<img src="./../assets/comment.png"></el-button>
+                            <a class="comment" type="text" href="#editor" @click="comment(item)">回帖<img src="./../assets/comment.png"></a>
                         </div>
                     </div>
                 </div>
             </div>
             <el-pagination class="pagination" background layout="prev, pager, next" :total="1000"></el-pagination>
-            <text-editor :type="2"></text-editor>
+            <text-editor ref="editor" id="editor" :type="2"></text-editor>
         </div>
         <right-msg></right-msg>
     </div>
@@ -152,6 +152,11 @@ export default {
                 {name: `${this.listName}`, route: `/list/${this.listUrl}`},
                 {name: `${this.postName}`, route: `/list/${this.listUrl}/${this.postId}`},
             ]
+    },
+    methods: {
+        comment(item) {
+            this.$refs.editor.setTag(item);
+        }
     },
 }
 </script>

@@ -24,6 +24,9 @@
   .submit {
     float: right;
     margin: 20px;
+    .tag {
+      margin-right: 20px;
+    }
   }
 }
 </style>
@@ -44,6 +47,13 @@
       @change="onEditorChange($event)"
     ></quill-editor>
     <div class="submit">
+      <el-tag
+        class="tag"
+        v-if="tag !== ''"
+        closable
+        @close="clearTag">
+        {{tag}}
+      </el-tag>
       <el-checkbox v-model="anonymous">匿名发表</el-checkbox>
       <el-button type="primary">发表</el-button>
     </div>
@@ -91,7 +101,8 @@ export default {
         }
       },
       anonymous: false,
-      title: ''
+      title: '',
+      tag: '',
     };
   },
   // manually control the data synchronization
@@ -109,6 +120,12 @@ export default {
     onEditorChange({ quill, html, text }) {
       console.log("editor change!", quill, html, text);
       this.content = html;
+    },
+    clearTag() {
+      this.tag = '';
+    },
+    setTag(data) {
+      this.tag = `回复${data}楼`;
     }
   },
   computed: {
