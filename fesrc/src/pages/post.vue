@@ -86,6 +86,9 @@
             }
         }
     }
+    .pagination {
+        margin: 30px 0 0 50px;
+    }
 }
 </style>
 <template>
@@ -118,7 +121,8 @@
                     </div>
                 </div>
             </div>
-            <text-editor></text-editor>
+            <el-pagination class="pagination" background layout="prev, pager, next" :total="1000"></el-pagination>
+            <text-editor :type="2"></text-editor>
         </div>
         <right-msg></right-msg>
     </div>

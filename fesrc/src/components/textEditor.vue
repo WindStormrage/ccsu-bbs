@@ -29,8 +29,8 @@
 </style>
 <template>
   <div class="editor">
-    <h1 class="title">发帖</h1>
-    <div class="titleInput">
+    <h1 class="title" v-if="type === 1">发帖</h1>
+    <div class="titleInput" v-if="type === 1">
       <label class="label">标题</label>
       <el-input class="input" v-model="title" placeholder="请输入标题"></el-input>
     </div>
@@ -57,6 +57,12 @@ import ImageResize from "quill-image-resize-module";
 Quill.register("modules/imageDrop", ImageDrop);
 Quill.register("modules/imageResize", ImageResize);
 export default {
+  props: {
+    type: {
+      type: Number, // 1为发帖 2为跟帖
+      default: 1
+    }
+  },
   data() {
     return {
       content: "<h2>请输入...</h2>",

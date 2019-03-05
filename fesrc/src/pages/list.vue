@@ -53,7 +53,7 @@
                     
                 </el-tab-pane>
             </el-tabs>
-            <text-editor></text-editor>
+            <text-editor :type="1"></text-editor>
         </div>
         <right-msg></right-msg>
     </div>
