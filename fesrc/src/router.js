@@ -49,19 +49,23 @@ export default new VueRouter({
       children: [
         {
           path: 'post',
-          component: userPost
+          component: userPost,
+          name: 'userPost'
         },
         {
           path: 'comment',
-          component: userComment
+          component: userComment,
+          name: 'userComment'
         },
         {
           path: 'information',
-          component: userInformation
+          component: userInformation,
+          name: 'userInformation'
         },
         {
           path: 'setting',
-          component: userSetting
+          component: userSetting,
+          name: 'userSetting'
         }
       ]
     },
