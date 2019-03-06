@@ -14,14 +14,14 @@ module.exports = class extends Base {
   async uploadImageAction() {
     const file = await this.file('file');
     const user = await this.post('user');
-    const name = new Date().getTime();
-    // 如果上传的是 png 格式的图片文件，则移动到其他目录
-    if (file && file.type === 'image/png') {
-      const filepath = path.join(think.ROOT_PATH, `runtime/upload/image/${name}.png`);
+    const time = new Date().getTime();
+    // 所有格式都可以上传，则移动到其他目录
+    if (file && file.type.split('/')[0] === 'image') {
+      const filepath = path.join(think.ROOT_PATH, `runtime/upload/image/${time}${file.name}`);
       think.mkdir(path.dirname(filepath));
       await rename(file.path, filepath);
       return this.success({
-        filepath: `${this.ctx.origin}/upload/image/${name}.png`,
+        filepath: `${this.ctx.origin}/upload/image/${time}${file.name}`,
         user
       });
     }
