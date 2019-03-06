@@ -163,7 +163,7 @@ export default {
                     { required: true, message: '请输入信息门户密码', trigger: 'change' },
                 ],
                 email: [
-                    { required: true, message: '请输入学生邮箱', trigger: 'change' },
+                    { required: true, message: '请输入邮箱', trigger: 'change' },
                 ],
                 verification: [
                     { required: true, message: '请输入邮箱验证码', trigger: 'change' },
