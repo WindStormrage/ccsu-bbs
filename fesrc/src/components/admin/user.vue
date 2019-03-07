@@ -1,12 +1,108 @@
 <style scoped lang="scss">
-</style>
 
+</style>
 <template>
-    <div>
-        user
-    </div>
+  <el-table
+    :data="userInfos"
+    stripe
+    style="width: 100%">
+    <el-table-column
+      prop="name"
+      label="用户名">
+    </el-table-column>
+    <el-table-column
+      prop="gender"
+      label="性别"
+      width="50">
+      <template slot-scope="scope">
+        <span v-if="scope.row.gender === 1" >男</span>
+        <span v-if="scope.row.gender === 2" >女</span>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="sId"
+      label="学号"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="email"
+      label="邮箱">
+    </el-table-column>
+    <el-table-column
+      prop="phone"
+      label="手机"
+      width="110">
+    </el-table-column>
+    <el-table-column
+      prop="birthday"
+      label="生日"
+      width="100">
+    </el-table-column>
+    <el-table-column
+      prop="last_login_at"
+      label="最后登录时间"
+      width="160">
+    </el-table-column>
+    <el-table-column
+      prop="create_at"
+      label="创建时间"
+      width="160">
+    </el-table-column>
+    <el-table-column
+      prop="operation"
+      label="操作">
+      <template slot-scope="scope">
+        <el-button v-if="scope.row.status === 1" @click="blackHoust(2)" type="text" size="small">关小黑屋</el-button>
+        <el-button v-else @click="blackHoust(1)" type="text" size="small">释放出来</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
+
 <script>
-export default {
-}
+  export default {
+    data() {
+      return {
+        userInfos: [
+            {
+                name: 'windstormrage',
+                gender: 1,
+                sId: 'B20150304523',
+                email: 'xiehanyang@360.cn',
+                phone: '15573195210',
+                birthday: '2019-11-11',
+                last_login_at: '2019-11-11 11:11:11',
+                create_at: '2019-11-11 11:11:11',
+                status: 1
+            },
+            {
+                name: 'windstormrage',
+                gender: 1,
+                sId: 'B20150304523',
+                email: 'xiehanyang@360.cn',
+                phone: '15573195210',
+                birthday: '2019-11-11',
+                last_login_at: '2019-11-11 11:11:11',
+                create_at: '2019-11-11 11:11:11',
+                status: 2
+            },
+            {
+                name: 'windstormrage',
+                gender: 1,
+                sId: 'B20150304523',
+                email: 'xiehanyang@360.cn',
+                phone: '15573195210',
+                birthday: '2019-11-11',
+                last_login_at: '2019-11-11 11:11:11',
+                create_at: '2019-11-11 11:11:11',
+                status: 1
+            },
+        ]
+      }
+    },
+    methods: {
+         blackHoust(status) {
+         }
+    },
+  }
 </script>
