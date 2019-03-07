@@ -95,7 +95,7 @@
 <template>
     <div>
         <div class="header">
-            <div class="logo">logo</div>
+            <router-link class="link" to="/home"><div class="logo">logo</div></router-link>
             <div class="bread">
                 <el-breadcrumb v-if="breadMsg.length !== 0" separator-class="el-icon-arrow-right">
                     <el-breadcrumb-item v-for="(item, index) in breadMsg" :key="index" :to="{ path: item.route }">{{item.name}}</el-breadcrumb-item>
@@ -113,12 +113,12 @@
                 <span class="post">帖子数：123</span>
                 <span class="comment">回帖数：456</span>
             </div>
-            <ul class="list">
+            <ul class="list" @click="drawer = false">
                 <router-link class="link" to="/home">首页</router-link>
                 <router-link class="link" to="/admin">管理系统</router-link>
                 <router-link class="link" to="/user/post">我的帖子</router-link>
                 <router-link class="link" to="/user/comment">我的回帖</router-link>
-                <router-link class="link" to="/user">我的消息</router-link>
+                <router-link class="link" to="/user/information">我的消息</router-link>
                 <router-link class="link" to="/user/setting">修改资料</router-link>
                 <router-link class="link" to="/loginout">退出登录</router-link>
             </ul>
