@@ -66,6 +66,11 @@ export default {
     components: {
         Header,
     },
+    watch:{
+        $route(to,from){
+            this.activeTab = this.$route.name
+        }
+    },
     data() {
         return {
             activeTab: 'userPost'
