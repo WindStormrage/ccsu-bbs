@@ -33,7 +33,15 @@ module.exports = class extends Base {
   async sendMailAction() {
     const emailTo = this.post('emailTo');
     const title = this.post('title');
-    const html = this.post('html');
+    let html = this.post('html');
+    const type = this.post('type'); // type为1的时候就是发送验证码
+    if (Number(type) === 1) {
+      const code = new Date().getTime() % 1000000;
+      await this.cache(emailTo, code, {
+        timeout: 5 * 60 * 1000
+      });
+      html = html.replace('<VerificationCode>', code);
+    }
     const data = await this.emailConfModel.sendMail({emailTo, title, html});
     return this.success(data);
   }
