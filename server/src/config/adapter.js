@@ -39,10 +39,10 @@ exports.model = {
     prefix: '',
     database: 'ccsu_bbs',
     encoding: 'utf8',
-    host: '127.0.0.1',
+    host: '123.207.39.128',
     port: '3306',
     user: 'root',
-    password: 'xiehanyang33',
+    password: 'XIEhanyang033',
     dateStrings: true
   }
 };
