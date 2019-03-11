@@ -35,3 +35,6 @@ app/
 
 config.development.js
 adapter.development.js
+
+# 默认config不变,如果需要修改的时候注释掉下面一行
+src/config/adapter.js
