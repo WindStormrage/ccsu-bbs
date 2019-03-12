@@ -2,6 +2,7 @@ const Base = require('./base');
 const fs = require('fs');
 const path = require('path');
 const rename = think.promisify(fs.rename, fs); // 通过 promisify 方法把 rename 方法包装成 Promise 接口
+const { random } = require('./../util/index.js');
 
 module.exports = class extends Base {
   constructor(...args) {
@@ -36,7 +37,7 @@ module.exports = class extends Base {
     let html = this.post('html');
     const type = this.post('type'); // type为1的时候就是发送验证码
     if (Number(type) === 1) {
-      const code = new Date().getTime() % 1000000;
+      const code = random(6);
       await this.cache(emailTo, code, {
         timeout: 5 * 60 * 1000
       });
