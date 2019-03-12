@@ -1,4 +1,5 @@
 const Base = require('./base.js');
+const { formatDateTime } = require('./../util/index.js');
 
 module.exports = class extends Base {
   constructor(...args) {
@@ -26,7 +27,13 @@ module.exports = class extends Base {
         name: data.name
       })
       .count();
-    const [code, isStudent, countSid, countName] = await Promise.all([promise1, promise2, promise3, promise4]);
+    // 然后看用户名是否存在
+    const promise5 = await this.userModel
+      .where({
+        email: data.email
+      })
+      .count();
+    const [code, isStudent, countSid, countName, countEmail] = await Promise.all([promise1, promise2, promise3, promise4, promise5]);
     if (code !== data.verification) {
       return this.fail(1001, '邮箱验证码错误，请输入正确的验证码');
     }
@@ -36,9 +43,13 @@ module.exports = class extends Base {
     if (countSid !== 0) {
       return this.fail(1003, '学号有重复，此学号已经注册过用户');
     }
-    if (countName !== data.verification) {
+    if (countName !== 0) {
       return this.fail(1004, '用户名有重复，请重新输入用户名');
     }
+    if (countEmail !== 0) {
+      return this.fail(1004, '邮箱有重复，请重新输入邮箱');
+    }
+    const date = formatDateTime(new Date());
     // 入库
     await this.userModel.add({
       avatar: 'http://123.207.39.128:8080/upload/file/ca37bac437e20a6d71d3fdc51e5c00fa',
@@ -48,9 +59,9 @@ module.exports = class extends Base {
       sid: data.sid,
       // data.sPass,
       email: data.email,
-      create_at: '',
-      update_at: '',
+      create_at: date,
+      last_login_at: date
     });
-    return this.success({});
+    return this.success('注册成功');
   }
 };
