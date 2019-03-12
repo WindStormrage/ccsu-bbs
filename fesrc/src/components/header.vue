@@ -9,7 +9,6 @@
         .logo {
             height: 60px;
             width: 100px;
-            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
             margin-left: 60px;
             text-align: center;
             line-height: 60px;
@@ -29,7 +28,6 @@
                 height: 60px;
                 width: 60px;
                 border-radius: 50%;
-                background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
                 vertical-align: middle;
             }
             .userName {
@@ -46,7 +44,6 @@
         .userHead {
             height: 130px;
             width: 130px;
-            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
             border-radius: 50%;
             margin: 40px;
         }
@@ -102,16 +99,16 @@
                 </el-breadcrumb>
             </div>
             <div class="msg" @click="drawer = true">
-                <img class="userHead" src="./../assets/logo.png">
-                <span class="userName">WindStormrage</span>
+                <img class="userHead" :src="this.userInfo.avatar || './../assets/logo.png'">
+                <span class="userName">{{this.userInfo.name || '没有名字'}}</span>
             </div>
         </div>
         <Drawer class="drawer" :closable="false" v-model="drawer">
-            <img class="userHead" src="./../assets/logo.png">
+            <img class="userHead" :src="this.userInfo.avatar || './../assets/logo.png'">
             <div class="userInfo">
-                <span class="name">WindStormrage</span>
-                <span class="post">帖子数：123</span>
-                <span class="comment">回帖数：456</span>
+                <span class="name">{{this.userInfo.name || '没有名字'}}</span>
+                <span class="post">帖子数：{{this.userInfo.countPost}}</span>
+                <span class="comment">回帖数：{{this.userInfo.countComment}}</span>
             </div>
             <ul class="list" @click="drawer = false">
                 <router-link class="link" to="/home">首页</router-link>
@@ -139,8 +136,12 @@ export default {
     },
     data() {
         return {
-            drawer: false
+            drawer: false,
+            userInfo: {}
         }
-    }
+    },
+    mounted() {
+        this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    },
 }
 </script>
