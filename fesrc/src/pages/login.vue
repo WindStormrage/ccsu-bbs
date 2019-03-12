@@ -66,18 +66,19 @@
         class="signIn"
         ref="signIn"
         :model="signIn"
-        label-width="60px"
+        label-width="65px"
         label-position="left"
+        :rules='signInRules'
       >
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="signIn.name"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="signIn.pass"></el-input>
         </el-form-item>
         <el-button class="visitorBtn" type="text" @click="visitor()">访客模式</el-button>
         <el-form-item>
-          <el-button class="submitBtn" type="primary" @click="onSubmitIn()">登录</el-button>
+          <el-button class="submitBtn" type="primary" @click="onSubmitIn('signIn')">登录</el-button>
         </el-form-item>
       </el-form>
       <el-form
@@ -150,7 +151,30 @@ export default {
     };
     return {
       menu: "signIn",
-      signIn: {},
+      signIn: {
+        name: "",
+        pass: "",
+      },
+      signInRules: {
+        name: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 15,
+            message: "长度在 3 到 15 个字符",
+            trigger: "blur"
+          }
+        ],
+        pass: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 15,
+            message: "长度在 6 到 15 个字符",
+            trigger: "blur"
+          }
+        ]
+      },
       signUp: {
         name: "",
         pass: "",
@@ -216,7 +240,45 @@ export default {
     // 改变tab的时候调用
     changeMenu() {},
     // 点击登录
-    onSubmitIn() {},
+    onSubmitIn(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          const sync = new Sycn();
+          sync
+            .POST("/api/login", this.signIn)
+            .then(data => {
+              if (data.errno === 0) {
+                this.$router.push("home");
+                this.$message({
+                  showClose: true,
+                  message: '登录成功',
+                  type: 'success'
+                });
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: data.errmsg,
+                  type: 'error'
+                });
+              }
+            })
+            .catch(err => {
+                this.$message({
+                  showClose: true,
+                  message: '登录失败,服务器错误,请稍后重试!',
+                  type: 'error'
+                });
+            });
+        } else {
+          this.$message({
+            showClose: true,
+            message: '注册失败,提交信息错误!',
+            type: 'error'
+          });
+          return false;
+        }
+      });
+    },
     // 点击注册
     onSubmitUp(formName) {
       this.$refs[formName].validate(valid => {
@@ -243,7 +305,7 @@ export default {
             .catch(err => {
                 this.$message({
                   showClose: true,
-                  message: '注册失败,网络错误,请稍后重试!',
+                  message: '注册失败,服务器错误,请稍后重试!',
                   type: 'error'
                 });
             });
