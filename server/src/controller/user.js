@@ -8,7 +8,7 @@ module.exports = class extends Base {
   }
   async loginAction() {
     const data = this.post();
-    const userInfo = await this.userModel
+    let userInfo = await this.userModel
       .where({
         name: data.name,
         password: data.pass
@@ -17,7 +17,20 @@ module.exports = class extends Base {
     if (think.isEmpty(userInfo)) {
       return this.fail(1001, '账号或密码错误!');
     }
+    // 登录后修改用户最后登录时间
+    await this.userModel
+      .where({
+        id: userInfo.id
+      })
+      .update({
+        last_login_at: formatDateTime(new Date())
+      });
+    // 设置session
     await this.session('userInfo', userInfo);
+    // 获得数据
+    const userData = await this.userModel.countUserData(userInfo.id);
+    delete userInfo.password;
+    userInfo = Object.assign({}, userInfo, userData);
     return this.success(userInfo);
   }
   async registerAction() {
@@ -74,8 +87,11 @@ module.exports = class extends Base {
       last_login_at: date
     });
     // 注册成功就设置session
-    const userInfo = await this.userModel.where({id}).find();
+    let userInfo = await this.userModel.where({id}).find();
     await this.session('userInfo', userInfo);
+    const userData = await this.userModel.countUserData(userInfo.id);
+    delete userInfo.password;
+    userInfo = Object.assign({}, userInfo, userData);
     return this.success(userInfo);
   }
 };
