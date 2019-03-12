@@ -6,6 +6,7 @@ module.exports = class extends Base {
     super(...args);
     this.userModel = this.model('user');
   }
+  // 登录
   async loginAction() {
     const data = this.post();
     let userInfo = await this.userModel
@@ -18,21 +19,24 @@ module.exports = class extends Base {
       return this.fail(1001, '账号或密码错误!');
     }
     // 登录后修改用户最后登录时间
+    const date = formatDateTime(new Date());
     await this.userModel
       .where({
         id: userInfo.id
       })
       .update({
-        last_login_at: formatDateTime(new Date())
+        last_login_at: date
       });
     // 设置session
     await this.session('userInfo', userInfo);
     // 获得数据
     const userData = await this.userModel.countUserData(userInfo.id);
     delete userInfo.password;
+    userInfo.last_login_at = date;
     userInfo = Object.assign({}, userInfo, userData);
     return this.success(userInfo);
   }
+  // 注册
   async registerAction() {
     const data = this.post();
     // 先看邮件验证码对不对
@@ -93,5 +97,10 @@ module.exports = class extends Base {
     delete userInfo.password;
     userInfo = Object.assign({}, userInfo, userData);
     return this.success(userInfo);
+  }
+  // 退出登录
+  async signOutAction() {
+    await this.session(null);
+    return this.success('ok');
   }
 };
