@@ -2,7 +2,6 @@
 .banner {
   width: calc(100% - 500px);
   height: 100vh;
-  // background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
   background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
   float: left;
 }
@@ -248,12 +247,13 @@ export default {
             .POST("/api/login", this.signIn)
             .then(data => {
               if (data.errno === 0) {
-                this.$router.push("home");
+                localStorage.setItem('userInfo', JSON.stringify(data.data));
                 this.$message({
                   showClose: true,
                   message: '登录成功',
                   type: 'success'
                 });
+                this.$router.push("home");
               } else {
                 this.$message({
                   showClose: true,
@@ -288,12 +288,13 @@ export default {
             .POST("/api/register", this.signUp)
             .then(data => {
               if (data.errno === 0) {
-                this.$router.push("home");
+                localStorage.setItem('userInfo', JSON.stringify(data.data));
                 this.$message({
                   showClose: true,
                   message: '注册成功',
                   type: 'success'
                 });
+                this.$router.push("home");
               } else {
                 this.$message({
                   showClose: true,
