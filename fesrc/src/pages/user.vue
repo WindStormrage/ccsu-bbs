@@ -28,7 +28,6 @@
             width: 150px;
             border-radius: 50%;
             margin: 60px 0 30px 0;
-            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
         }
         span {
             display: block;

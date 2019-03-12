@@ -22,7 +22,6 @@
                 .header {
                     height: 100px;
                     width: 100px;
-                    background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
                     border-radius: 50%;
                 }
                 span {
