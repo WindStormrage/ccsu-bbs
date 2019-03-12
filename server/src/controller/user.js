@@ -47,7 +47,7 @@ module.exports = class extends Base {
       return this.fail(1004, '用户名有重复，请重新输入用户名');
     }
     if (countEmail !== 0) {
-      return this.fail(1004, '邮箱有重复，请重新输入邮箱');
+      return this.fail(1005, '邮箱有重复，请重新输入邮箱');
     }
     const date = formatDateTime(new Date());
     // 入库

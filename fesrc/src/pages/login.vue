@@ -225,13 +225,34 @@ export default {
           sync
             .POST("/api/register", this.signUp)
             .then(data => {
-              console.log(data);
+              if (data.errno === 0) {
+                this.$router.push("home");
+                this.$message({
+                  showClose: true,
+                  message: '注册成功',
+                  type: 'success'
+                });
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: data.errmsg,
+                  type: 'error'
+                });
+              }
             })
             .catch(err => {
-              console.log("error submit!!");
+                this.$message({
+                  showClose: true,
+                  message: '注册失败,网络错误,请稍后重试!',
+                  type: 'error'
+                });
             });
         } else {
-          console.log("error submit!!");
+          this.$message({
+            showClose: true,
+            message: '注册失败,提交信息错误!',
+            type: 'error'
+          });
           return false;
         }
       });
