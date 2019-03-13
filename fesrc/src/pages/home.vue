@@ -107,7 +107,7 @@ export default {
             .catch(err => {
                 this.$message({
                   showClose: true,
-                  message: '登录失败,服务器错误,请稍后重试!',
+                  message: '服务器错误,请稍后重试!',
                   type: 'error'
                 });
             });
