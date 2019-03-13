@@ -3,5 +3,6 @@ module.exports = [
   ['/sendMail', 'common/sendMail'],
   ['/login', 'user/login'],
   ['/register', 'user/register'],
-  ['/signOut', 'user/signOut']
+  ['/signOut', 'user/signOut'],
+  ['/home', 'home/get']
 ];
