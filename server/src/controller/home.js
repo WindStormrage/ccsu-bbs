@@ -10,19 +10,12 @@ module.exports = class extends Base {
   async getAction() {
     const labels = await this.labelModel.select();
     for (const label of labels) {
-      const pormise1 = this.labelModel
-        .alias('l')
-        .join({
-          table: 'post',
-          as: 'p',
-          join: 'right',
-          on: ['l.id', 'p.label_id']
-        })
+      const pormise1 = this.postModel
         .where({
-          'l.id': label.id
+          'label_id': label.id
         })
-        .field('p.id, p.name')
-        .order('p.create_at DESC')
+        .field('id, name')
+        .order('create_at DESC')
         .limit(4)
         .select();
       const pormise2 = this.postModel
