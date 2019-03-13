@@ -40,23 +40,23 @@ module.exports = class extends Base {
   async registerAction() {
     const data = this.post();
     // 先看邮件验证码对不对
-    const promise1 = await this.cache(data.email);
+    const promise1 = this.cache(data.email);
     // 然后看学号密码对应的上吗(暂时不做验证)
-    const promise2 = await Promise.resolve(true);
+    const promise2 = Promise.resolve(true);
     // 然后看学号是否注册过了
-    const promise3 = await this.userModel
+    const promise3 = this.userModel
       .where({
         sid: data.sid
       })
       .count();
     // 然后看用户名是否存在
-    const promise4 = await this.userModel
+    const promise4 = this.userModel
       .where({
         name: data.name
       })
       .count();
     // 然后看用户名是否存在
-    const promise5 = await this.userModel
+    const promise5 = this.userModel
       .where({
         email: data.email
       })
