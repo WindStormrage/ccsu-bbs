@@ -110,9 +110,10 @@
                     <div class="post">
                         <div class="text">
                             <div class="quote" v-if="item.quote_id !== 0 && item.quoteStatus !== 2">
-                                在 {{item.quoteFloor}} {{item.quoteAnonymous ? '匿名' : item.quoteName}} 提到：{{item.quoteContent}}
+                                在 {{item.quoteFloor}} {{item.quoteAnonymous ? '匿名' : item.quoteName}} 提到：
+                                <span v-html="item.quoteContent"></span>
                             </div>
-                            <p>{{item.content}}</p>
+                            <p v-html="item.content"></p>
                         </div>
                         <div class="footer">
                             <span class="msg">{{item.floor}}&nbsp;&nbsp;&nbsp;{{item.create_at}}</span>
