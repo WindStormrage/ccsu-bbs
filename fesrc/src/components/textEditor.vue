@@ -122,35 +122,18 @@ export default {
       isLogin: false,
     };
   },
-  // manually control the data synchronization
-  // 如果需要手动控制数据同步，父组件需要显式地处理changed事件
-  methods: {
-    // onEditorBlur(quill) {
-    //   console.log("editor blur!", quill);
-    // },
-    // onEditorFocus(quill) {
-    //   console.log("editor focus!", quill);
-    // },
-    // onEditorReady(quill) {
-    //   console.log("editor ready!", quill);
-    // },
-    // onEditorChange({ quill, html, text }) {
-    //   console.log("editor change!", quill, html, text);
-    //   this.content = html;
-    // },
-    clearTag() {
-      this.tag = '';
-    },
-    setTag(data) {
-      this.tag = `回复${data}楼`;
-    }
-  },
   mounted() {
     if (localStorage.getItem("userInfo")) {
       this.isLogin = true;
     }
   },
   methods: {
+    clearTag() {
+      this.tag = '';
+    },
+    setTag(data) {
+      this.tag = `回复${data}楼`;
+    },
     submit() {
       if (this.type === 1 && this.title === '') {
         this.$message({
@@ -193,8 +176,6 @@ export default {
               }
             })
             .catch(err => {
-              console.log(err);
-              
               this.$message({
                 showClose: true,
                 message: '服务器错误,请稍后重试!',
