@@ -81,6 +81,7 @@ import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize-module";
 Quill.register("modules/imageDrop", ImageDrop);
 Quill.register("modules/imageResize", ImageResize);
+import Sycn from "./../js/util/sync.js";
 export default {
   props: {
     type: {
@@ -151,7 +152,56 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.content);
+      if (this.type === 1 && this.title === '') {
+        this.$message({
+          message: '请填写标题!',
+          type: 'warning'
+        });
+        return;
+      }
+      if (this.content === '') {
+        this.$message({
+          message: '请填写帖子正文!',
+          type: 'warning'
+        });
+        return;
+      }
+      // 如果是发表帖子的话
+      if (this.type === 1) {
+        const url = this.$route.params.label_url;
+        const sync = new Sycn();
+        sync.POST("/api/list/newPost", {
+                url,
+                content: this.content,
+                title: this.title,
+                anonymous: this.anonymous
+            })
+            .then(data => {
+              if (data.errno === 0) {
+                this.$message({
+                  showClose: true,
+                  message: '发表成功',
+                  type: 'success'
+                });
+                this.$router.push(`/list/${url}/${data.data.id}`)
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: data.errmsg,
+                  type: 'error'
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              
+              this.$message({
+                showClose: true,
+                message: '服务器错误,请稍后重试!',
+                type: 'error'
+              });
+            });
+      }
     }
   },
 };
