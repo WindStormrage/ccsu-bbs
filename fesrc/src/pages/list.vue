@@ -95,8 +95,8 @@ export default {
     },
     data() {
         return {
-            listUrl: 'type',
-            listName: '分类名',
+            listUrl: '',
+            listName: '',
             breadMsg: [],
             tabActive: 'post',
             postCount: 0,
@@ -109,49 +109,55 @@ export default {
         }
     },
     mounted() {
-        this.breadMsg = [
-                {name: '首页', route: '/home'},
-                {name: `${this.listName}`, route: `/list/${this.listUrl}`}
-            ];
         this.listUrl = this.$route.params.label_url;
-        this.getData(0);
+        this.getData(0)
+            .then(() => {
+                this.breadMsg = [
+                        {name: '首页', route: '/home'},
+                        {name: `${this.listName}`, route: `/list/${this.listUrl}`}
+                    ];
+            });
     },
     methods: {
         getData(status) {
-            let page = this.currentPage;
-            // 如果为3的话就是只要找精华的
-            if (status === 3) {
-                page = this.currentPage3;
-            }
-            const url = this.$route.params.label_url;
-            const sync = new Sycn();
-            sync.GET("/api/list", {
-                    url,
-                    page,
-                    pagesize: 1,
-                    status: status
-                })
-                .then(data => {
-                    this.tableData = data.data.post.data;
-                    // 不同的tab的分页设置不同的数据
-                    if (status === 0) {
-                        this.total = data.data.post.count;
-                        this.currentPage = data.data.post.currentPage;
-                    }else if (status === 3) {
-                        this.total3 = data.data.post.count;
-                        this.currentPage3 = data.data.post.currentPage;
-                    }
-                    this.listName = data.data.listName
-                    this.postCount = data.data.postCount
-                    this.commentCount = data.data.commentCount
-                })
-                .catch(err => {
-                    this.$message({
-                    showClose: true,
-                    message: '服务器错误,请稍后重试!',
-                    type: 'error'
+            return new Promise((resolve, reject) => {
+                let page = this.currentPage;
+                // 如果为3的话就是只要找精华的
+                if (status === 3) {
+                    page = this.currentPage3;
+                }
+                const url = this.$route.params.label_url;
+                const sync = new Sycn();
+                sync.GET("/api/list", {
+                        url,
+                        page,
+                        pagesize: 1,
+                        status: status
+                    })
+                    .then(data => {
+                        this.tableData = data.data.post.data;
+                        // 不同的tab的分页设置不同的数据
+                        if (status === 0) {
+                            this.total = data.data.post.count;
+                            this.currentPage = data.data.post.currentPage;
+                        }else if (status === 3) {
+                            this.total3 = data.data.post.count;
+                            this.currentPage3 = data.data.post.currentPage;
+                        }
+                        this.listName = data.data.listName
+                        this.postCount = data.data.postCount
+                        this.commentCount = data.data.commentCount
+                        resolve();
+                    })
+                    .catch(err => {
+                        this.$message({
+                            showClose: true,
+                            message: '服务器错误,请稍后重试!',
+                            type: 'error'
+                        });
+                        reject();
                     });
-                });
+            })
         },
         // 切换tab的时候
         clickTab() {
