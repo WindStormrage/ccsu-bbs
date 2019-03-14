@@ -20,6 +20,13 @@
     .el-breadcrumb {
       font-size: 16px;
     }
+    /deep/ .el-breadcrumb__inner {
+      display: inline-block;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
   .msg {
     margin-right: 60px;
