@@ -1,6 +1,22 @@
 <style scoped lang="scss">
 .editor {
   margin: 30px 0;
+  position: relative;
+  .mask {
+    height: calc(100% + 80px);
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 2;
+    margin-bottom: 50px;
+    a {
+      font-size: 50px;  
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
   /deep/ .ql-editor {
     height: 300px;
     overflow-y: auto;
@@ -23,7 +39,7 @@
   }
   .submit {
     float: right;
-    margin: 20px;
+    margin: 30px;
     .tag {
       margin-right: 20px;
     }
@@ -32,6 +48,9 @@
 </style>
 <template>
   <div class="editor">
+    <div v-if="!isLogin" class="mask">
+      <a href="/login">请 登 录</a>
+    </div>
     <h1 class="title" v-if="type === 1">发帖</h1>
     <div class="titleInput" v-if="type === 1">
       <label class="label">标题</label>
@@ -41,10 +60,6 @@
       v-model="content"
       ref="myQuillEditor"
       :options="editorOption"
-      @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)"
-      @ready="onEditorReady($event)"
-      @change="onEditorChange($event)"
     ></quill-editor>
     <div class="submit">
       <el-tag
@@ -55,7 +70,7 @@
         {{tag}}
       </el-tag>
       <el-checkbox v-model="anonymous">匿名发表</el-checkbox>
-      <el-button type="primary">发表</el-button>
+      <el-button type="primary" @click="submit()">发表</el-button>
     </div>
   </div>
 </template>
@@ -75,7 +90,7 @@ export default {
   },
   data() {
     return {
-      content: "<h2>请输入...</h2>",
+      content: "",
       editorOption: {
         modules: {
           toolbar: [
@@ -103,24 +118,25 @@ export default {
       anonymous: false,
       title: '',
       tag: '',
+      isLogin: false,
     };
   },
   // manually control the data synchronization
   // 如果需要手动控制数据同步，父组件需要显式地处理changed事件
   methods: {
-    onEditorBlur(quill) {
-      console.log("editor blur!", quill);
-    },
-    onEditorFocus(quill) {
-      console.log("editor focus!", quill);
-    },
-    onEditorReady(quill) {
-      console.log("editor ready!", quill);
-    },
-    onEditorChange({ quill, html, text }) {
-      console.log("editor change!", quill, html, text);
-      this.content = html;
-    },
+    // onEditorBlur(quill) {
+    //   console.log("editor blur!", quill);
+    // },
+    // onEditorFocus(quill) {
+    //   console.log("editor focus!", quill);
+    // },
+    // onEditorReady(quill) {
+    //   console.log("editor ready!", quill);
+    // },
+    // onEditorChange({ quill, html, text }) {
+    //   console.log("editor change!", quill, html, text);
+    //   this.content = html;
+    // },
     clearTag() {
       this.tag = '';
     },
@@ -128,13 +144,15 @@ export default {
       this.tag = `回复${data}楼`;
     }
   },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
+  mounted() {
+    if (localStorage.getItem("userInfo")) {
+      this.isLogin = true;
     }
   },
-  mounted() {
-    console.log("this is current quill instance object", this.editor);
-  }
+  methods: {
+    submit() {
+      console.log(this.content);
+    }
+  },
 };
 </script>
