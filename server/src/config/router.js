@@ -6,5 +6,7 @@ module.exports = [
   ['/signOut', 'user/signOut'],
   ['/home', 'home/get'],
   ['/list', 'list/get'],
-  ['/list/newPost', 'list/newPost']
+  ['/list/newPost', 'list/newPost'],
+  ['/post', 'post/get'],
+  ['/post/newComment', 'post/newComment']
 ];
