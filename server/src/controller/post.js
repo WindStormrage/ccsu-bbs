@@ -69,7 +69,6 @@ module.exports = class extends Base {
         'c2.status as quoteStatus',
         'u2.name as quoteName'
       ].join(','))
-      .order('c.create_at DESC')
       .page(page, pagesize)
       .countSelect();
     const [
