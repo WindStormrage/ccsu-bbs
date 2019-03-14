@@ -120,6 +120,7 @@ export default {
       title: '',
       tag: '',
       isLogin: false,
+      tagId: 0,
     };
   },
   mounted() {
@@ -133,6 +134,7 @@ export default {
     },
     setTag(data) {
       this.tag = `回复${data.floor}`;
+      this.tagId = data.id
     },
     submit() {
       if (this.type === 1 && this.title === '') {
@@ -150,9 +152,9 @@ export default {
         return;
       }
       // 如果是发表帖子的话
+      const sync = new Sycn();
       if (this.type === 1) {
         const url = this.$route.params.label_url;
-        const sync = new Sycn();
         sync.POST("/api/list/newPost", {
                 url,
                 content: this.content,
@@ -167,6 +169,37 @@ export default {
                   type: 'success'
                 });
                 this.$router.push(`/list/${url}/${data.data.id}`)
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: data.errmsg,
+                  type: 'error'
+                });
+              }
+            })
+            .catch(err => {
+              this.$message({
+                showClose: true,
+                message: '服务器错误,请稍后重试!',
+                type: 'error'
+              });
+            });
+      } else {
+        const postId = this.$route.params.post_id;
+        sync.POST("/api/post/newComment", {
+                post_id: postId,
+                content: this.content,
+                anonymous: this.anonymous,
+                quote: this.tagId
+            })
+            .then(data => {
+              if (data.errno === 0) {
+                this.$message({
+                  showClose: true,
+                  message: '发表成功',
+                  type: 'success'
+                });
+                this.$router.go(0)
               } else {
                 this.$message({
                   showClose: true,

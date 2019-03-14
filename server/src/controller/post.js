@@ -130,29 +130,31 @@ module.exports = class extends Base {
   }
   // 发表评论
   async newCommentAction() {
-    // const url = this.post('url');
-    // const content = this.post('content');
-    // const title = this.post('title');
-    // const anonymous = this.post('anonymous');
-    // // 通过url获得label_id
-    // const promise1 = this.labelModel.where({url}).find();
-    // const promise2 = this.session('userInfo');
-    // const [label, userInfo] = await Promise.all([promise1, promise2]);
-    // if (think.isEmpty(userInfo)) {
-    //   return this.fail(1001, '用户未登录,请登录后重试');
-    // }
-    // const date = formatDateTime(new Date());
-    // const id = await this.postModel
-    //   .add({
-    //     name: title,
-    //     content,
-    //     label_id: label.id,
-    //     user_id: userInfo.id,
-    //     status: 1,
-    //     anonymous: anonymous ? 1 : 0,
-    //     create_at: date,
-    //     update_at: date
-    //   });
-    // return this.success({id});
+    const postId = this.post('post_id');
+    const content = this.post('content');
+    const quote = this.post('quote');
+    const anonymous = this.post('anonymous');
+    // 查一下现在总共有几楼了,用来看现在是几楼
+    const promise1 = this.commentModel
+      .where({ post_id: postId })
+      .count();
+    const promise2 = this.session('userInfo');
+    const [commentCount, userInfo] = await Promise.all([promise1, promise2]);
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const date = formatDateTime(new Date());
+    const id = await this.commentModel
+      .add({
+        content,
+        post_id: postId,
+        user_id: userInfo.id,
+        quote_id: quote,
+        status: 1,
+        anonymous: anonymous ? 1 : 0,
+        floor: `${commentCount + 2}楼`,
+        create_at: date
+      });
+    return this.success({id});
   }
 };
