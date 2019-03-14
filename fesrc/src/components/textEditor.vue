@@ -132,7 +132,7 @@ export default {
       this.tag = '';
     },
     setTag(data) {
-      this.tag = `回复${data}楼`;
+      this.tag = `回复${data.floor}`;
     },
     submit() {
       if (this.type === 1 && this.title === '') {

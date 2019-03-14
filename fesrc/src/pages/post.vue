@@ -48,6 +48,7 @@
                     padding: 15px;
                     min-height: 227px;
                     .quote {
+                        width: calc(100% - 20px);
                         float: left;
                         border-left: 5px solid #a1c4fd;
                         padding-left: 10px;
@@ -95,32 +96,29 @@
         <Header :bread-msg="breadMsg"></Header>
         <div class="content">
             <div class="container">
-                <h1 class="title">帖子标题</h1>
-                <div class="card" v-for="item in 10" :key="item">
+                <h1 class="title">{{postName}}</h1>
+                <div class="card" v-for="item in data" :key="item.id">
                     <div class="user">
-                        <img class="header" src="./../assets/logo.png">
-                        <span class="name">windstromrage</span>
-                        <span class="postCount">帖子数：123</span>
-                        <span class="commentCount">回帖数：1233</span>
+                        <img class="header" :src="item.anonymous ? 'http://123.207.39.128:8080/upload/file/ca37bac437e20a6d71d3fdc51e5c00fa' : item.actorAvatar">
+                        <span class="name">{{item.anonymous ? '匿名' : item.actor}}</span>
+                        <span class="postCount">帖子数：{{item.postCount}}</span>
+                        <span class="commentCount">回帖数：{{item.commentCount}}</span>
                     </div>
                     <div class="post">
                         <div class="text">
-                            <div class="quote">
-                                在 一楼 windStormrage 提到：
-                                Lorem ipsum dolor sit amet, consectetupsum dolor sit amet, consectetupsum dolor sit amet, consecum dolor sit amet, consectetupsum dolor sit amet, consecum dolor sit amet, consectetupsum dolor sit amet, consectetur adipiscing elit.
+                            <div class="quote" v-if="item.quote_id === 1 || item.quoteStatus === 2">
+                                在 {{item.quoteFloor}} {{item.quoteAnonymous ? '匿名' : item.quoteName}} 提到：{{item.quoteContent}}
                             </div>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adpsum dolor sit amet, consectetupsum dolor sit amet, consectetupsum dolor sit amet, consectetu
-                            </p>
+                            <p>{{item.content}}</p>
                         </div>
                         <div class="footer">
-                            <span class="msg">一楼&nbsp;&nbsp;&nbsp;2018-11-22 09:51:14</span>
+                            <span class="msg">{{item.floor}}&nbsp;&nbsp;&nbsp;{{item.create_at}}</span>
                             <a class="comment" type="text" href="#editor" @click="comment(item)">回帖<img src="./../assets/comment.png"></a>
                         </div>
                     </div>
                 </div>
             </div>
-            <el-pagination class="pagination" background layout="prev, pager, next" :total="1000"></el-pagination>
+            <el-pagination class="pagination" background layout="prev, pager, next" :total="total" :page-size="1" :current-page.sync="currentPage" @current-change="getData()"></el-pagination>
             <text-editor ref="editor" id="editor" :type="2"></text-editor>
         </div>
         <right-msg></right-msg>
@@ -130,6 +128,7 @@
 import Header from './../components/header.vue'
 import RightMsg from './../components/rightMsg.vue'
 import TextEditor from './../components/textEditor.vue'
+import Sycn from "./../js/util/sync.js";
 export default {
     components: {
         Header,
@@ -143,18 +142,53 @@ export default {
             postId: '23',
             postName: '帖子名',
             breadMsg: [],
+            data: [],
+            currentPage: 1,
+            total: 0
         }
     },
     mounted() {
-        this.breadMsg = [
-                {name: '首页', route: '/home'},
-                {name: `${this.listName}`, route: `/list/${this.listUrl}`},
-                {name: `${this.postName}`, route: `/list/${this.listUrl}/${this.postId}`},
-            ]
+        this.listUrl = this.$route.params.label_url;
+        this.getData()
+            .then(() => {
+                this.breadMsg = [
+                        {name: '首页', route: '/home'},
+                        {name: `${this.listName}`, route: `/list/${this.listUrl}`},
+                        {name: `${this.postName}`, route: `/list/${this.listUrl}/${this.postId}`},
+                    ]
+            });
     },
     methods: {
         comment(item) {
             this.$refs.editor.setTag(item);
+        },
+        getData() {
+            return new Promise((resolve, reject) => {
+                const id = this.$route.params.post_id;
+                const sync = new Sycn();
+                sync.GET("/api/post", {
+                        page: this.currentPage,
+                        pagesize: 1,
+                        id,
+                    })
+                    .then(data => {
+                        this.listName = data.data.label.name;
+                        this.postName = data.data.label.title;
+                        this.total = data.data.comments.count;
+                        this.data = data.data.comments.data;
+                        console.log(this.data);
+                        
+                        resolve();
+                    })
+                    .catch(err => {
+                        this.$message({
+                            showClose: true,
+                            message: '服务器错误,请稍后重试!',
+                            type: 'error'
+                        });
+                        reject();
+                    });
+            })
         }
     },
 }
