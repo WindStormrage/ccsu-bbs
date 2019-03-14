@@ -81,4 +81,31 @@ module.exports = class extends Base {
     }
     return this.success({post, postCount, commentCount, listName: label.name});
   }
+  // 发表帖子
+  async newPostAction() {
+    const url = this.post('url');
+    const content = this.post('content');
+    const title = this.post('title');
+    const anonymous = this.post('anonymous');
+    // 通过url获得label_id
+    const promise1 = this.labelModel.where({url}).find();
+    const promise2 = this.session('userInfo');
+    const [label, userInfo] = await Promise.all([promise1, promise2]);
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const date = formatDateTime(new Date());
+    const id = await this.postModel
+      .add({
+        name: title,
+        content,
+        label_id: label.id,
+        user_id: userInfo.id,
+        status: 1,
+        anonymous: anonymous ? 1 : 0,
+        create_at: date,
+        update_at: date
+      });
+    return this.success({id});
+  }
 };
