@@ -73,8 +73,11 @@
                     .el-button {
                         padding: 0;
                     }
+                    .msg {
+                        margin-right: 20px;
+                    }
                     .comment {
-                        margin: 0 10px 0 20px;
+                        margin: 0 10px 0 0;
                         color: #666;
                         img {
                             height: 18px;
@@ -106,14 +109,14 @@
                     </div>
                     <div class="post">
                         <div class="text">
-                            <div class="quote" v-if="item.quote_id === 1 || item.quoteStatus === 2">
+                            <div class="quote" v-if="item.quote_id !== 0 && item.quoteStatus !== 2">
                                 在 {{item.quoteFloor}} {{item.quoteAnonymous ? '匿名' : item.quoteName}} 提到：{{item.quoteContent}}
                             </div>
                             <p>{{item.content}}</p>
                         </div>
                         <div class="footer">
                             <span class="msg">{{item.floor}}&nbsp;&nbsp;&nbsp;{{item.create_at}}</span>
-                            <a class="comment" type="text" href="#editor" @click="comment(item)">回帖<img src="./../assets/comment.png"></a>
+                            <a v-if="item.id !== 0" class="comment" type="text" href="#editor" @click="comment(item)">回帖<img src="./../assets/comment.png"></a>
                         </div>
                     </div>
                 </div>
@@ -175,9 +178,7 @@ export default {
                         this.listName = data.data.label.name;
                         this.postName = data.data.label.title;
                         this.total = data.data.comments.count;
-                        this.data = data.data.comments.data;
-                        console.log(this.data);
-                        
+                        this.data = data.data.comments.data;                        
                         resolve();
                     })
                     .catch(err => {

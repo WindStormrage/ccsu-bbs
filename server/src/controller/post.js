@@ -87,6 +87,45 @@ module.exports = class extends Base {
       comment.postCount = postCount;
       comment.commentCount = commentCount;
     }
+    // 如果当前页是第一页的话,就给最前面加上一个楼主的内容
+    if (comments.currentPage === 1) {
+      const landlord = await this.postModel
+        .alias('p')
+        .join({
+          table: 'user', // 获得评论人的用户名
+          join: 'left',
+          as: 'u',
+          on: ['p.user_id', 'u.id']
+        })
+        .field([
+          // 'c.id', 楼主没有回帖所有不需要有id,或者是id为0
+          'p.content',
+          'p.user_id',
+          'p.anonymous',
+          // 'p.floor', 楼主的楼层号是1楼
+          'p.create_at',
+          // 'p.quote_id', 楼主没有跟帖
+          'u.name as actor',
+          'u.avatar as actorAvatar'
+        ].join(','))
+        .where({
+          'p.id': id
+        })
+        .find();
+      const promise1 = this.postModel
+        .where({ user_id: landlord.user_id })
+        .count();
+      const promise2 = this.commentModel
+        .where({ user_id: landlord.user_id })
+        .count();
+      const [postCount, commentCount] = await Promise.all([promise1, promise2]);
+      landlord.postCount = postCount;
+      landlord.commentCount = commentCount;
+      landlord.id = 0;
+      landlord.floor = '主楼';
+      landlord.quote_id = 0;
+      comments.data.unshift(landlord);
+    }
     return this.success({label, comments});
   }
   // 发表评论
