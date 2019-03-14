@@ -29,7 +29,11 @@
                 <el-tab-pane label="帖子" name="post">
                     <el-table :data="tableData" stripe style="width: 100%">
                         <el-table-column prop="id" label="序号" width="80"></el-table-column>
-                        <el-table-column prop="title" label="标题" width="360"></el-table-column>
+                        <el-table-column prop="title" label="标题" width="360">
+                            <template slot-scope="scope">
+                                    <span @click="$router.push(`/list/${listUrl}/${scope.row.id}`)" style="display: block;cursor: pointer;">{{ scope.row.title }}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="actor" label="作者" width="190">
                             <template slot-scope="scope">
                                 <img height="35" width="35" style="float: left;border-radius: 50%;margin-top:5px;" :src="scope.row.actorAvatar">
