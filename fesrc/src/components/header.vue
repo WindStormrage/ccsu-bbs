@@ -164,7 +164,7 @@ export default {
             .then(data => {
                 console.log('退出登录');
             });
-        this.$router.push("login");
+        this.$router.push("/login");
     }
   }
 };
