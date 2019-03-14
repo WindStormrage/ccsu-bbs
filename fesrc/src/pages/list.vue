@@ -36,9 +36,9 @@
                         </el-table-column>
                         <el-table-column prop="actor" label="作者" width="190">
                             <template slot-scope="scope">
-                                <img height="35" width="35" style="float: left;border-radius: 50%;margin-top:5px;" :src="scope.row.actorAvatar">
+                                <img height="35" width="35" style="float: left;border-radius: 50%;margin-top:5px;" :src="scope.row.anonymous ? 'http://123.207.39.128:8080/upload/file/ca37bac437e20a6d71d3fdc51e5c00fa' : scope.row.actorAvatar">
                                 <p style="float: right;">
-                                    <span style="display: block;">{{ scope.row.actor }}</span>
+                                    <span style="display: block;">{{ scope.row.anonymous ? '匿名' : scope.row.actor }}</span>
                                     <span style="display: block;">{{ scope.row.create_at }}</span>
                                 </p>
                             </template>

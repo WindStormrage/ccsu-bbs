@@ -1,4 +1,5 @@
 const Base = require('./base.js');
+const { formatDateTime } = require('./../util/index.js');
 
 module.exports = class extends Base {
   constructor(...args) {
@@ -35,7 +36,7 @@ module.exports = class extends Base {
         'p.label_id': label.id,
         'p.status': status
       })
-      .field('p.id,p.name as title,p.create_at,u.name as actor,u.avatar as actorAvatar')
+      .field('p.id,p.name as title,p.create_at,u.name as actor,u.avatar as actorAvatar,p.anonymous')
       .order('p.create_at DESC')
       .page(page, pagesize)
       .countSelect();
@@ -69,13 +70,13 @@ module.exports = class extends Base {
           on: ['c.user_id', 'u.id']
         })
         .where({ 'c.post_id': item.id })
-        .field('u.name,c.create_at')
+        .field('u.name,c.create_at,c.anonymous')
         .order('c.create_at DESC')
         .limit(1)
         .find();
       const [comment, lastComment] = await Promise.all([promise1, promise2]);
       item.comment = comment;
-      item.commentName = lastComment.name;
+      item.commentName = lastComment.anonymous ? '匿名' : lastComment.name;
       item.update_at = lastComment.create_at;
     }
     return this.success({post, postCount, commentCount, listName: label.name});
