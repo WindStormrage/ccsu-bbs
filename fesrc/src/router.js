@@ -72,7 +72,7 @@ export default new VueRouter({
     {
       path: '/admin',
       component: admin,
-      redirect: '/admin/user',
+      // redirect: '/admin/user',
       children: [
         {
           path: 'user',
