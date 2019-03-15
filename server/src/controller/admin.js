@@ -6,6 +6,8 @@ module.exports = class extends Base {
     this.userModel = this.model('user');
     this.permissionModel = this.model('permission');
     this.userPermissionModel = this.model('user_permission');
+    this.postModel = this.model('post');
+    this.commentModel = this.model('comment');
   }
   // 判断是否管理员
   async isAdminAction() {
@@ -199,5 +201,104 @@ module.exports = class extends Base {
         .delete();
       return this.success('删除成功');
     }
+  }
+  // 获得帖子列表
+  async listGetAction() {
+    const url = this.get('url');
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有用户的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': `list/${url}`
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    // 先获得所有的权限
+    const list = await this.postModel
+      .alias('p')
+      .join({
+        table: 'label',
+        as: 'l',
+        join: 'left',
+        on: ['p.label_id', 'l.id']
+      })
+      .join({
+        table: 'user',
+        as: 'u',
+        join: 'left',
+        on: ['p.user_id', 'u.id']
+      })
+      .where({
+        'l.url': url
+      })
+      .field('p.id,p.name as title,u.name as landlord,p.anonymous,p.status,p.create_at')
+      .order('p.create_at DESC')
+      .select();
+    // 然后循环post,找到每个post的跟帖数
+    for (const post of list) {
+      post.count = await this.commentModel.where({post_id: post.id}).count();
+    }
+    return this.success(list);
+  }
+  // 帖子状态的修改
+  async listPutAction() {
+    const url = this.get('url');
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有用户的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': `list/${url}`
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    const status = this.post('status');
+    const id = this.post('id');
+    // 判断当前id是否为对应操作url上的,防止越权操作
+    const count = await this.postModel
+      .alias('p')
+      .join({
+        table: 'label',
+        as: 'l',
+        join: 'left',
+        on: ['p.label_id', 'l.id']
+      })
+      .where({
+        'p.id': id,
+        'l.url': url
+      })
+      .count();
+    if (count === 0) {
+      return this.fail(1003, '当前分类下没有此帖子,越权操作');
+    }
+    await this.postModel
+      .where({id})
+      .update({status});
+    return this.success();
   }
 };
