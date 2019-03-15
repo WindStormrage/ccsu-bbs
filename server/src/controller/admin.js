@@ -140,4 +140,64 @@ module.exports = class extends Base {
     }
     return this.success(permissions);
   }
+  // 修改用户的权限接口
+  async permissionPutAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有用户的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': 'permission'
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    const operation = this.post('operation');
+    const name = this.post('name');
+    const permissionId = this.post('permission_id');
+    const promise1 = this.userModel.where({name}).find();
+    const promise2 = this.permissionModel.where({id: permissionId}).find();
+    const [user, permission] = await Promise.all([promise1, promise2]);
+    if (think.isEmpty(user)) {
+      return this.fail(1001, '不存在此用户,请重新输入用户名');
+    }
+    if (think.isEmpty(permission)) {
+      return this.fail(1002, '不存在此权限');
+    }
+    if (operation === 'add') {
+      const countPermission = await this.userPermissionModel
+        .where({
+          user_id: user.id,
+          permission_id: permissionId
+        })
+        .count();
+      if (countPermission > 0) {
+        return this.fail(1003, '用户已经拥有此权限,无需重复添加');
+      }
+      await this.userPermissionModel.add({
+        permission_id: permissionId,
+        user_id: user.id
+      });
+      return this.success('添加成功');
+    } else if (operation === 'del') {
+      await this.userPermissionModel
+        .where({
+          permission_id: permissionId,
+          user_id: user.id
+        })
+        .delete();
+      return this.success('删除成功');
+    }
+  }
 };
