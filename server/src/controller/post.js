@@ -143,6 +143,9 @@ module.exports = class extends Base {
     if (think.isEmpty(userInfo)) {
       return this.fail(1001, '用户未登录,请登录后重试');
     }
+    if (userInfo.status === 2) {
+      return this.fail(1002, '用户被关小黑屋,禁止发言,如需释放请联系管理员');
+    }
     const date = formatDateTime(new Date());
     const id = await this.commentModel
       .add({
