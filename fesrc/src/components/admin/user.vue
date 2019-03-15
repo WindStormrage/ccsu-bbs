@@ -52,8 +52,8 @@
       prop="operation"
       label="操作">
       <template slot-scope="scope">
-        <el-button v-if="scope.row.status === 1" @click="blackHoust(2)" type="text" size="small">关小黑屋</el-button>
-        <el-button v-else @click="blackHoust(1)" type="text" size="small">释放出来</el-button>
+        <el-button v-if="scope.row.status === 1" @click="blackHoust(scope.row.id, 2)" type="text" size="small">关小黑屋</el-button>
+        <el-button v-else @click="blackHoust(scope.row.id, 1)" type="text" size="small">释放出来</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -71,7 +71,17 @@
       this.getData();
     },
     methods: {
-         blackHoust(status) {
+         blackHoust(id, status) {
+          const sync = new Sycn();
+          sync.GET("/api/admin/user/put", {id, status})
+              .then(data => {
+                this.$message({
+                  showClose: true,
+                  message: '操作成功',
+                  type: 'success'
+                });
+                this.$router.go(0);
+              });
          },
          getData() {
           const sync = new Sycn();
