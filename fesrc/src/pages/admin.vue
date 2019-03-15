@@ -23,18 +23,19 @@
         class="el-menu-vertical"
         :router="true"
         :default-active="defaultAction">
-            <el-menu-item index="user" :route="{path: '/admin/user'}">
-                <span slot="title">用户管理</span>
-            </el-menu-item>
-            <el-menu-item index="permission" :route="{path: '/admin/permission'}">
-                <span slot="title">权限管理</span>
-            </el-menu-item>
-            <el-submenu index="list">
-                <template slot="title">
-                    <span>帖子管理</span>
-                </template>
-                <el-menu-item index="list/url" :route="{path: '/admin/list/url'}">学术交流</el-menu-item>
-            </el-submenu>
+            <div v-for="item in menuData" :key="`1-${item.url}`">
+                <el-menu-item v-if="item.children.length === 0" :index="item.url" :route="{path: `/admin/${item.url}`}">
+                    <span slot="title">{{item.name}}</span>
+                </el-menu-item>
+            </div>
+            <div v-for="item in menuData" :key="`2-${item.url}`">
+                <el-submenu v-if="item.children.length !== 0" :index="item.url">
+                    <template slot="title">
+                        <span>{{item.name}}</span>
+                    </template>
+                    <el-menu-item v-for="children in item.children" :key="`${item.url}/${children.url}`" :index="`${item.url}/${children.url}`" :route="{path: `/admin/${item.url}/${children.url}`}">{{children.name}}</el-menu-item>
+                </el-submenu>
+            </div>
         </el-menu>
         <div class="content">
             <router-view></router-view>
@@ -42,20 +43,58 @@
     </div>
 </template>
 <script>
+import Sycn from "./../js/util/sync.js";
 import Header from './../components/header.vue'
-    export default {
-        components: {
-            Header,
+export default {
+    components: {
+        Header,
+    },
+    data() {
+        return {
+            defaultAction: 'user',
+            menuData: []
+        }
+    },
+    mounted() {
+        this.defaultAction = this.$route.path.split('/admin/')[1];
+        this.getMenu();
+    },
+    methods: {
+        getMenu() {
+            const sync = new Sycn();
+            sync.GET("/api/admin/getMenu")
+                .then(data => {
+                    this.formatMenu(data.data);
+                });
         },
-        data() {
-            return {
-                defaultAction: 'user'
-            }
-        },
-        mounted() {
-            this.defaultAction = this.$route.path.split('/admin/')[1];
-        },
-        methods: {
-        },
-    }
+        formatMenu(data) {
+            data.forEach(item => {
+                const urlSplit = item.url.split('/');
+                // 如果长度为1的话就是主menu,直接推进去
+                if (urlSplit.length === 1) {
+                    item.children = [];
+                    this.menuData.push(item);
+                } else if (urlSplit.length === 2) {
+                    // 找找之前有没有推过,没推过就创一个新的,推过了就推到他的儿子里面
+                    const have = this.menuData.find(item => urlSplit[0] === item.url);
+                    if (have === undefined) {
+                        this.menuData.push({
+                            url: urlSplit[0],
+                            name: item.name.split('—')[0],
+                            children: [{
+                                url: urlSplit[1],
+                                name: item.name.split('—')[1],
+                            }]
+                        });
+                    } else {
+                        have.children.push({
+                            url: urlSplit[1],
+                            name: item.name.split('—')[1],
+                        })
+                    }
+                }
+            })
+        }
+    },
+}
 </script>
