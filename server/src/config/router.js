@@ -12,5 +12,6 @@ module.exports = [
   ['/admin/isAdmin', 'admin/isAdmin'],
   ['/admin/getMenu', 'admin/getMenu'],
   ['/admin/user/get', 'admin/userGet'],
-  ['/admin/user/put', 'admin/userPut']
+  ['/admin/user/put', 'admin/userPut'],
+  ['/admin/permission/get', 'admin/permissionGet']
 ];

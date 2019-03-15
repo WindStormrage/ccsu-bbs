@@ -20,10 +20,10 @@
         width="220">
         </el-table-column>
         <el-table-column
-        prop="have"
+        prop="users"
         label="拥有人">
         <template slot-scope="scope">
-            <span>{{scope.row.have.join(',')}}</span>
+            <span>{{scope.row.users.join(',')}}</span>
         </template>
         </el-table-column>
         <el-table-column
@@ -31,7 +31,7 @@
         label="修改拥有人"
         width="250">
         <template slot-scope="scope">
-            <el-button @click="change(scope.row.have)" type="text" size="small">修改</el-button>
+            <el-button @click="change(scope.row.users)" type="text" size="small">修改</el-button>
         </template>
         </el-table-column>
     </el-table>
@@ -53,24 +53,22 @@
 </template>
 
 <script>
+  import Sycn from "./../../js/util/sync.js";
   export default {
     data() {
       return {
-        permissions: [
-            {
-                name: '帖子管理-学术交流',
-                url: '/admin/post/stydy',
-                have: ['xiehanyng','xhufhaidfa']
-            }
-        ],
+        permissions: [],
         dialogVisible: false,
         peoples: [],
         userName: ''
       }
     },
+    mounted() {
+      this.getData();
+    },
     methods: {
-        change(have) {
-            this.peoples = have;
+        change(users) {
+            this.peoples = users;
             this.dialogVisible = true;
         },
         delUser() {
@@ -78,6 +76,13 @@
         },
         addUser() {
             
+        },
+        getData() {
+          const sync = new Sycn();
+          sync.GET("/api/admin/permission/get")
+              .then(data => {
+                this.permissions = data.data;
+              });
         }
     },
   }

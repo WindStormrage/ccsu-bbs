@@ -68,6 +68,7 @@ module.exports = class extends Base {
       .select();
     return this.success(users);
   }
+  // 用户管理的put操作
   async userPutAction() {
     const userInfo = await this.session('userInfo');
     if (think.isEmpty(userInfo)) {
@@ -96,5 +97,47 @@ module.exports = class extends Base {
       .where({id})
       .update({status});
     return this.success();
+  }
+  // 获得权限列表
+  async permissionGetAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有用户的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': 'permission'
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    // 先获得所有的权限
+    const permissions = await this.permissionModel.select();
+    // 然后循环找出每个权限拥有的人
+    for (const permission of permissions) {
+      const users = await this.userPermissionModel
+        .alias('up')
+        .join({
+          table: 'user',
+          as: 'u',
+          join: 'left',
+          on: ['up.user_id', 'u.id']
+        })
+        .where({'up.permission_id': permission.id})
+        .field('u.name')
+        .select();
+      permission.users = users.map(item => item.name);
+    }
+    return this.success(permissions);
   }
 };
