@@ -129,7 +129,7 @@
       </div>
       <ul class="list" @click="drawer = false">
         <router-link class="link" to="/home">首页</router-link>
-        <router-link class="link" to="/admin">管理系统</router-link>
+        <router-link v-if="isAdmin" class="link" to="/admin">管理系统</router-link>
         <router-link class="link" to="/user/post">我的帖子</router-link>
         <router-link class="link" to="/user/comment">我的回帖</router-link>
         <router-link class="link" to="/user/information">我的消息</router-link>
@@ -155,13 +155,19 @@ export default {
   data() {
     return {
       drawer: false,
-      userInfo: {}
+      userInfo: {},
+      isAdmin: false
     };
   },
   mounted() {
     if (localStorage.getItem("userInfo")) {
       this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
     }
+    const sync = new Sycn();
+    sync.GET("/api/isAdmin")
+      .then(data => {
+          this.isAdmin = data.data.isAdmin;
+      });
   },
   methods: {
     signOut() {

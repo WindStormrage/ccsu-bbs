@@ -8,5 +8,6 @@ module.exports = [
   ['/list', 'list/get'],
   ['/list/newPost', 'list/newPost'],
   ['/post', 'post/get'],
-  ['/post/newComment', 'post/newComment']
+  ['/post/newComment', 'post/newComment'],
+  ['/isAdmin', 'admin/isAdmin'],
 ];
