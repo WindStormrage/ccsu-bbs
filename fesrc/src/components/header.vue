@@ -164,7 +164,7 @@ export default {
       this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
     }
     const sync = new Sycn();
-    sync.GET("/api/isAdmin")
+    sync.GET("/api/admin/isAdmin")
       .then(data => {
           this.isAdmin = data.data.isAdmin;
       });
