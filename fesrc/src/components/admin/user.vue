@@ -11,16 +11,16 @@
       label="用户名">
     </el-table-column>
     <el-table-column
-      prop="gender"
+      prop="sex"
       label="性别"
       width="50">
       <template slot-scope="scope">
-        <span v-if="scope.row.gender === 1" >男</span>
-        <span v-if="scope.row.gender === 2" >女</span>
+        <span v-if="scope.row.sex === 1" >男</span>
+        <span v-if="scope.row.sex === 2" >女</span>
       </template>
     </el-table-column>
     <el-table-column
-      prop="sId"
+      prop="sid"
       label="学号"
       width="120">
     </el-table-column>
@@ -60,48 +60,25 @@
 </template>
 
 <script>
+  import Sycn from "./../../js/util/sync.js";
   export default {
     data() {
       return {
-        userInfos: [
-            {
-                name: 'windstormrage',
-                gender: 1,
-                sId: 'B20150304523',
-                email: 'xiehanyang@360.cn',
-                phone: '15573195210',
-                birthday: '2019-11-11',
-                last_login_at: '2019-11-11 11:11:11',
-                create_at: '2019-11-11 11:11:11',
-                status: 1
-            },
-            {
-                name: 'windstormrage',
-                gender: 1,
-                sId: 'B20150304523',
-                email: 'xiehanyang@360.cn',
-                phone: '15573195210',
-                birthday: '2019-11-11',
-                last_login_at: '2019-11-11 11:11:11',
-                create_at: '2019-11-11 11:11:11',
-                status: 2
-            },
-            {
-                name: 'windstormrage',
-                gender: 1,
-                sId: 'B20150304523',
-                email: 'xiehanyang@360.cn',
-                phone: '15573195210',
-                birthday: '2019-11-11',
-                last_login_at: '2019-11-11 11:11:11',
-                create_at: '2019-11-11 11:11:11',
-                status: 1
-            },
-        ]
+        userInfos: []
       }
+    },
+    mounted() {
+      this.getData();
     },
     methods: {
          blackHoust(status) {
+         },
+         getData() {
+          const sync = new Sycn();
+          sync.GET("/api/admin/user/get")
+              .then(data => {
+                this.userInfos = data.data;
+              });
          }
     },
   }
