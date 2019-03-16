@@ -13,6 +13,9 @@
     <el-table-column
       prop="title"
       label="帖子标题">
+        <template slot-scope="scope">
+            <span @click="$router.push(`/list/${scope.row.label_url}/${scope.row.id}`)" style="cursor: pointer;">{{scope.row.title}}</span>
+        </template>
     </el-table-column>
     <el-table-column
       prop="floor"
@@ -28,24 +31,24 @@
 </template>
 
 <script>
+  import Sycn from "./../../js/util/sync.js";
   export default {
     data() {
       return {
-        tableData: [
-            {
-                type: '学术交流',
-                title: '这是一个帖子的标题,很长的',
-                floor: '5楼',
-                create_at: '2019-2-5 8:30:54'
-            },
-            {
-                type: '学术交流',
-                title: '这是一个帖子的标题,很长的',
-                floor: '10楼',
-                create_at: '2019-2-5 8:30:54'
-            },
-        ]
+        tableData: []
       }
-    }
+    },
+    mounted() {
+      this.getData();
+    },
+    methods: {
+      getData() {
+        const sync = new Sycn();
+        sync.GET(`/api/user/getComment`)
+          .then(data => {
+            this.tableData = data.data;
+          });
+      }
+    },
   }
 </script>

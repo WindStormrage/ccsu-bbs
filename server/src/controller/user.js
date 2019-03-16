@@ -106,7 +106,7 @@ module.exports = class extends Base {
     await this.session(null);
     return this.success('ok');
   }
-  // 获得用户信息
+  // 获得用户的帖子
   async getPostAction() {
     const userInfo = await this.session('userInfo');
     if (think.isEmpty(userInfo)) {
@@ -120,11 +120,37 @@ module.exports = class extends Base {
         as: 'l',
         on: ['p.label_id', 'l.id']
       })
+      .where({'p.user_id': userInfo.id})
       .field('p.id,l.url as label_url,l.name as type,p.name as title,p.create_at')
       .select();
     for (const item of post) {
       item.commentCount = await this.commentModel.where({'post_id': item.id}).count();
     }
     return this.success(post);
+  }
+  // 获得用户的回帖
+  async getCommentAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const comment = await this.commentModel
+      .alias('c')
+      .join({
+        table: 'post',
+        join: 'left',
+        as: 'p',
+        on: ['c.post_id', 'p.id']
+      })
+      .join({
+        table: 'label',
+        join: 'left',
+        as: 'l',
+        on: ['p.label_id', 'l.id']
+      })
+      .where({'c.user_id': userInfo.id})
+      .field('c.id,l.name as type,l.url as label_url,p.name as title,c.floor,c.create_at')
+      .select();
+    return this.success(comment);
   }
 };
