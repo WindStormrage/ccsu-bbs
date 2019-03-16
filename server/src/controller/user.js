@@ -8,6 +8,7 @@ module.exports = class extends Base {
     this.postModel = this.model('post');
     this.commentModel = this.model('comment');
     this.labelModel = this.model('label');
+    this.informationModel = this.model('information');
   }
   // 登录
   async loginAction() {
@@ -152,5 +153,34 @@ module.exports = class extends Base {
       .field('c.id,l.name as type,l.url as label_url,p.name as title,c.floor,c.create_at')
       .select();
     return this.success(comment);
+  }
+  // 获得用户的提醒消息
+  async getInformationAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const information = await this.informationModel
+      .alias('i')
+      .join({
+        table: 'post',
+        join: 'left',
+        as: 'p',
+        on: ['i.post_id', 'p.id']
+      })
+      .join({
+        table: 'label',
+        join: 'left',
+        as: 'l',
+        on: ['p.label_id', 'l.id']
+      })
+      .where({'i.user_id': userInfo.id})
+      .field('i.id,l.name as type,l.url as label_url,p.name as title,i.read,i.create_at,i.type as info_type')
+      .select();
+    // 获取完后把所有的消息全部变成已读
+    await this.informationModel
+      .where({user_id: userInfo.id})
+      .update({read: 1});
+    return this.success(information);
   }
 };
