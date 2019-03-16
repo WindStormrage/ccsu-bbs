@@ -63,17 +63,21 @@
         <el-input v-model="userInfo.name"></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="gender">
-        <el-radio v-model="userInfo.gender" label="1">男</el-radio>
-        <el-radio v-model="userInfo.gender" label="2">女</el-radio>
+        <el-radio v-model="userInfo.gender" :label="1">男</el-radio>
+        <el-radio v-model="userInfo.gender" :label="2">女</el-radio>
       </el-form-item>
       <el-form-item label="生日" prop="birthday">
         <el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期"></el-date-picker>
       </el-form-item>
-      <el-form-item label="学号" prop="sId">
-        <el-input v-model="userInfo.sId" :disabled="true"></el-input>
+      <el-form-item label="学号" prop="sid">
+        <el-input v-model="userInfo.sid" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="userInfo.email" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱提醒" prop="reminder">
+        <el-radio v-model="userInfo.reminder" :label="1">提醒</el-radio>
+        <el-radio v-model="userInfo.reminder" :label="0">不提醒</el-radio>
       </el-form-item>
       <el-form-item label="手机" prop="phone">
         <el-input v-model="userInfo.phone"></el-input>
@@ -85,17 +89,19 @@
   </div>
 </template>
 <script>
+import Sycn from "./../../js/util/sync.js";
 export default {
   data() {
     return {
       userInfo: {
         avatar: "",
         name: "",
-        gender: "",
+        gender: 1,
         birthday: "",
-        sId: "",
+        sid: "",
         email: "",
-        phone: ""
+        phone: "",
+        reminder: 1
       },
       userInfoRules: {
         avatar: [{ required: true, message: "请选择图片", trigger: "change" }],
@@ -112,26 +118,63 @@ export default {
         birthday: [
           { required: true, message: "点击选择日期", trigger: "change" }
         ],
-        // sId: [
+        // sid: [
         //   { required: true, message: "请输入学号", trigger: "change" },
         //   { min: 10, max: 15, message: "请输入正确的学号", trigger: "change" }
         // ],
         // email: [
         //     { required: true, message: '请输入邮箱', trigger: 'change' },
         // ],
+        reminder: [{ required: true, message: "请选择是否提醒", trigger: "change" }],
         phone: [
           { required: true, message: "请输入手机号", trigger: "change" },
         ]
       }
     };
   },
+  mounted() {
+    if (localStorage.getItem("userInfo")) {
+      this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.userInfo.gender = this.userInfo.sex;
+    }
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          const sync = new Sycn();
+          sync.POST("/api/user/setting", this.userInfo)
+            .then(data => {
+              if (data.errno === 0) {
+                localStorage.setItem('userInfo', JSON.stringify(data.data));
+                this.$message({
+                  showClose: true,
+                  message: '修改成功',
+                  type: 'success'
+                });
+                this.userInfo = data.data;
+                this.userInfo.gender = this.userInfo.sex;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: data.errmsg,
+                  type: 'error'
+                });
+              }
+            })
+            .catch(err => {
+                this.$message({
+                  showClose: true,
+                  message: '注册失败,服务器错误,请稍后重试!',
+                  type: 'error'
+                });
+            });
         } else {
-          console.log("error submit!!");
+          this.$message({
+            showClose: true,
+            message: '提交失败,提交信息错误!',
+            type: 'error'
+          });
           return false;
         }
       });
@@ -154,3 +197,6 @@ export default {
   }
 };
 </script>
+
+
+// TODO:头像这里要用图片上传,然后生日这里上传也有问题

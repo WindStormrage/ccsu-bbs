@@ -59,7 +59,7 @@ module.exports = class extends Base {
         name: data.name
       })
       .count();
-    // 然后看用户名是否存在
+    // 然后看邮箱是否存在
     const promise5 = this.userModel
       .where({
         email: data.email
@@ -182,5 +182,44 @@ module.exports = class extends Base {
       .where({user_id: userInfo.id})
       .update({read: 1});
     return this.success(information);
+  }
+  // 用户资料设置
+  async settingAction() {
+    let userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const data = this.post();
+    // 然后看用户名是否存在
+    const countName = await this.userModel
+      .where({
+        name: data.name,
+        id: ['!=', userInfo.id]
+      })
+      .count();
+    if (countName !== 0) {
+      return this.fail(1002, '用户名有重复，请重新输入用户名');
+    }
+    await this.userModel
+      .where({
+        id: userInfo.id
+      })
+      .update({
+        avatar: data.avatar,
+        name: data.name,
+        sex: data.gender,
+        birthday: data.birthday,
+        reminder: data.reminder,
+        phone: data.phone
+      });
+    // 改成新的userInfo
+    userInfo = await this.userModel.where({id: userInfo.id}).find();
+    // 设置session
+    await this.session('userInfo', userInfo);
+    // 获得数据
+    const userData = await this.userModel.countUserData(userInfo.id);
+    delete userInfo.password;
+    userInfo = Object.assign({}, userInfo, userData);
+    return this.success(userInfo);
   }
 };

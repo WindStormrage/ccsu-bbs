@@ -20,5 +20,5 @@ module.exports = [
   ['/user/getPost', 'user/getPost'],
   ['/user/getComment', 'user/getComment'],
   ['/user/getInformation', 'user/getInformation'],
-  ['/user/getUserInfo', 'user/getUserInfo']
+  ['/user/setting', 'user/setting']
 ];
