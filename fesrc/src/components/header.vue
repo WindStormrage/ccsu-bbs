@@ -166,7 +166,10 @@ export default {
     const sync = new Sycn();
     sync.GET("/api/admin/isAdmin")
       .then(data => {
-          this.isAdmin = data.data.isAdmin;
+        if (data.errno === 1001) {
+          return;
+        }
+        this.isAdmin = data.data.isAdmin;
       });
   },
   methods: {
