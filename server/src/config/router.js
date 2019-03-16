@@ -16,5 +16,9 @@ module.exports = [
   ['/admin/permission/get', 'admin/permissionGet'],
   ['/admin/permission/put', 'admin/permissionPut'],
   ['/admin/list/:url/get', 'admin/listGet'],
-  ['/admin/list/:url/put', 'admin/listPut']
+  ['/admin/list/:url/put', 'admin/listPut'],
+  ['/user/getPost', 'user/getPost'],
+  ['/user/getComment', 'user/getComment'],
+  ['/user/getInformation', 'user/getInformation'],
+  ['/user/getUserInfo', 'user/getUserInfo']
 ];

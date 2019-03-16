@@ -5,6 +5,9 @@ module.exports = class extends Base {
   constructor(...args) {
     super(...args);
     this.userModel = this.model('user');
+    this.postModel = this.model('post');
+    this.commentModel = this.model('comment');
+    this.labelModel = this.model('label');
   }
   // 登录
   async loginAction() {
@@ -102,5 +105,26 @@ module.exports = class extends Base {
   async signOutAction() {
     await this.session(null);
     return this.success('ok');
+  }
+  // 获得用户信息
+  async getPostAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    const post = await this.postModel
+      .alias('p')
+      .join({
+        table: 'label',
+        join: 'left',
+        as: 'l',
+        on: ['p.label_id', 'l.id']
+      })
+      .field('p.id,l.url as label_url,l.name as type,p.name as title,p.create_at')
+      .select();
+    for (const item of post) {
+      item.commentCount = await this.commentModel.where({'post_id': item.id}).count();
+    }
+    return this.success(post);
   }
 };

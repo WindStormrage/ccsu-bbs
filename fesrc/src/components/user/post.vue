@@ -28,6 +28,7 @@
 </template>
 
 <script>
+  import Sycn from "./../../js/util/sync.js";
   export default {
     data() {
       return {
@@ -46,6 +47,18 @@
             },
         ]
       }
-    }
+    },
+    mounted() {
+      this.getData();
+    },
+    methods: {
+      getData() {
+        const sync = new Sycn();
+        sync.GET(`/api/user/getPost`)
+          .then(data => {
+            this.tableData = data.data;
+          });
+      }
+    },
   }
 </script>
