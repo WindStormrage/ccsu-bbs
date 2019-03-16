@@ -52,31 +52,35 @@
             <router-view></router-view>
         </div>
         <div class="user">
-            <img class="header" src="./../assets/logo.png">
-            <span class="name">windstromrage</span>
-            <span class="postCount">帖子数：123</span>
-            <span class="commentCount">回帖数：1233</span>
+            <img class="header" :src="this.userInfo.avatar">
+            <span class="name">{{this.userInfo.name}}</span>
+            <span class="postCount">帖子数：{{this.userInfo.countPost}}</span>
+            <span class="commentCount">回帖数：{{this.userInfo.countComment}}</span>
         </div>
     </div>
 </template>
 <script>
-import Header from './../components/header.vue'
+import Header from './../components/header.vue';
 export default {
     components: {
         Header,
     },
     watch:{
         $route(to,from){
-            this.activeTab = this.$route.name
+            this.activeTab = this.$route.name;
         }
     },
     data() {
         return {
-            activeTab: 'userPost'
+            activeTab: 'userPost',
+            userInfo: {},
         }
     },
     mounted() {
-        this.activeTab = this.$route.name
+        this.activeTab = this.$route.name;
+        if (localStorage.getItem("userInfo")) {
+        this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        }
     },
     methods: {
         tebClick() {
