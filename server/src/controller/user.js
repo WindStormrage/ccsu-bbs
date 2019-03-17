@@ -175,7 +175,7 @@ module.exports = class extends Base {
         on: ['p.label_id', 'l.id']
       })
       .where({'i.user_id': userInfo.id})
-      .field('i.id,l.name as type,l.url as label_url,p.name as title,i.read,i.create_at,i.type as info_type')
+      .field('i.id,l.name as type,l.url as label_url,p.name as title,i.read,i.create_at,i.type as info_type,i.post_id')
       .select();
     // 获取完后把所有的消息全部变成已读
     await this.informationModel
