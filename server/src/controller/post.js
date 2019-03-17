@@ -7,6 +7,7 @@ module.exports = class extends Base {
     this.labelModel = this.model('label');
     this.postModel = this.model('post');
     this.commentModel = this.model('comment');
+    this.userModel = this.model('user');
   }
   // 分页,精华的筛选
   async getAction() {
@@ -158,6 +159,13 @@ module.exports = class extends Base {
         floor: `${commentCount + 2}楼`,
         create_at: date
       });
+    // 提醒楼主,如果有quote就同时提醒他
+    const post = await this.postModel.where({id: postId}).find();
+    this.userModel.sendUserMessage(post.user_id, 3, postId);
+    if (!think.isEmpty(quote)) {
+      const quotePost = await this.postModel.where({id: quote}).find();
+      this.userModel.sendUserMessage(quotePost.user_id, 2, postId);
+    }
     return this.success({id});
   }
 };
