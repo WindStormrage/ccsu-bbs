@@ -24,7 +24,7 @@
       prop="title"
       label="帖子标题">
         <template slot-scope="scope">
-            <span @click="$router.push(`/list/${scope.row.label_url}/${scope.row.id}`)" style="cursor: pointer;">{{scope.row.title}}</span>
+            <span @click="$router.push(`/list/${scope.row.label_url}/${scope.row.post_id}`)" style="cursor: pointer;">{{scope.row.title}}</span>
         </template>
     </el-table-column>
     <el-table-column
