@@ -67,7 +67,7 @@
         <el-radio v-model="userInfo.gender" :label="2">女</el-radio>
       </el-form-item>
       <el-form-item label="生日" prop="birthday">
-        <el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
       <el-form-item label="学号" prop="sid">
         <el-input v-model="userInfo.sid" :disabled="true"></el-input>
@@ -154,6 +154,7 @@ export default {
                 });
                 this.userInfo = data.data;
                 this.userInfo.gender = this.userInfo.sex;
+                this.$router.go(0);
               } else {
                 this.$message({
                   showClose: true,
@@ -180,7 +181,7 @@ export default {
       });
     },
     handleAvatarSuccess(res, file) {
-      this.userInfo.avatar = URL.createObjectURL(file.raw);
+      this.userInfo.avatar = res.data.filepath;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg" || file.type === "image/png";
@@ -197,6 +198,3 @@ export default {
   }
 };
 </script>
-
-
-// TODO:头像这里要用图片上传,然后生日这里上传也有问题
