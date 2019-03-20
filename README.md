@@ -27,6 +27,9 @@ npm run build
 #### 可能出现的问题
 * 后端路由错误
 * 静态资源加载错误,可能是你复制的位置有问题,还有可能是前端`vue.config.js`里面的`baseUrl`设置错误了
+* 上线的时候记得是用`npm i --production --registry=https://registry.npm.taobao.org`安装依赖
+* 可能会出现个别依赖没有的情况比如说`debug`
+* 刚刚遇到了一个大问题,就是发布到线上的时候发现我的页面可以打开然后我的资源文件都404,然后在文档里面看到,应为thinkjs默认只有开发环境才会用`resource`中间件来处理资源请求,生产环境一般用`nginx`,但是我还是想用`node`,所以按照教程的把`src/config/middleware.js`里面的`resource`一直打开然后更新了这个文件后发现还是404,找了很久问题...(两个小时后)最后才想起生产环境的后端文件都是从`/app`里面获取的,所以如果配置文件有更新需要手动`npm run compile`一下,然后把`/app`里面的文件全部覆盖到服务器上
 
 #### 分支解释
 * master 用来作为当前的开发分支
