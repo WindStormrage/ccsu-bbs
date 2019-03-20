@@ -10,5 +10,6 @@ module.exports = {
         'Quill': 'quill/dist/quill.js'
       }),
     ]
-  }
+  },
+  baseUrl: '/static/',
 }
