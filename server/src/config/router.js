@@ -22,8 +22,13 @@ module.exports = [
   ['/api/user/getInformation', 'user/getInformation'],
   ['/api/user/setting', 'user/setting'],
   ['/admin/*', 'index/index'],
+  ['/admin', 'index/index'],
   ['/home/*', 'index/index'],
+  ['/home', 'index/index'],
   ['/login/*', 'index/index'],
+  ['/login', 'index/index'],
   ['/list/*', 'index/index'],
-  ['/user/*', 'index/index']
+  ['/list', 'index/index'],
+  ['/user/*', 'index/index'],
+  ['/user', 'index/index']
 ];
