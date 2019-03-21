@@ -50,7 +50,7 @@
       <el-form-item label="头像" prop="avatar">
         <el-upload
           class="avatar-uploader"
-          action="http://localhost:8666/api/uploadImage"
+          :action="`${origin}/api/uploadImage`"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -101,7 +101,8 @@ export default {
         sid: "",
         email: "",
         phone: "",
-        reminder: 1
+        reminder: 1,
+        origin: window.location.origin,
       },
       userInfoRules: {
         avatar: [{ required: true, message: "请选择图片", trigger: "change" }],
@@ -137,6 +138,9 @@ export default {
       this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.userInfo.gender = this.userInfo.sex;
     }
+  },
+  created() {
+    this.origin = window.location.origin;
   },
   methods: {
     submitForm(formName) {
