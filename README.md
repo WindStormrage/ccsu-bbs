@@ -11,17 +11,19 @@
 
 #### 部署方法
 
-1. 前端代码打包
+1. 取消`vue.config.js`中`baseUrl`的注释
+
+2. 前端代码打包
 
 ```
 npm run build
 ```
 
-2. 把打包后dist里面的html文件放在server里面的view里面(覆盖)
+3. 把打包后dist里面的html文件放在server里面的view里面(覆盖)
 
 这里没有实现自动化,以后有时间改成自动化的脚本
 
-3. 把dist里面的资源文件放在server里面的的www里面的static里面(覆盖)
+4. 把dist里面的资源文件放在server里面的的www里面的static里面(覆盖)
 
 然后就部署成功了
 #### 可能出现的问题
