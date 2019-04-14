@@ -1,5 +1,6 @@
 const Base = require('./base.js');
 const { formatDateTime } = require('./../util/index.js');
+const checkCCSU = require('./../util/checkCCSU.js');
 
 module.exports = class extends Base {
   constructor(...args) {
@@ -45,8 +46,8 @@ module.exports = class extends Base {
     const data = this.post();
     // 先看邮件验证码对不对
     const promise1 = this.cache(data.email);
-    // 然后看学号密码对应的上吗(暂时不做验证)
-    const promise2 = Promise.resolve(true);
+    // 然后看学号密码对应的上吗
+    const promise2 = checkCCSU({USERNAME: data.sid, PASSWORD: data.sPass});
     // 然后看学号是否注册过了
     const promise3 = this.userModel
       .where({
@@ -65,11 +66,11 @@ module.exports = class extends Base {
         email: data.email
       })
       .count();
-    const [code, isStudent, countSid, countName, countEmail] = await Promise.all([promise1, promise2, promise3, promise4, promise5]);
+    const [code, student, countSid, countName, countEmail] = await Promise.all([promise1, promise2, promise3, promise4, promise5]);
     if (code !== data.verification) {
       return this.fail(1001, '邮箱验证码错误，请输入正确的验证码');
     }
-    if (!isStudent) {
+    if (student.length !== 2 && student.length !== 3) {
       return this.fail(1002, '教务系统验证错误，请输入正确的学号或密码');
     }
     if (countSid !== 0) {
@@ -90,6 +91,7 @@ module.exports = class extends Base {
       password: data.pass,
       sid: data.sid,
       // data.sPass,
+      real_name: student,
       email: data.email,
       create_at: date,
       last_login_at: date
@@ -221,5 +223,9 @@ module.exports = class extends Base {
     delete userInfo.password;
     userInfo = Object.assign({}, userInfo, userData);
     return this.success(userInfo);
+  }
+  async testAction() {
+    const data = await checkCCSU({USERNAME: 'B20150304523', PASSWORD: '184011'});
+    return this.success({name: data});
   }
 };
