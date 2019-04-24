@@ -51,7 +51,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-pagination class="pagination" background layout="prev, pager, next" :total="total" :page-size="1" :current-page.sync="currentPage" @current-change="getData(0)"></el-pagination>
+                    <el-pagination class="pagination" background layout="prev, pager, next" :total="total" :page-size="5" :current-page.sync="currentPage" @current-change="getData(0)"></el-pagination>
                 </el-tab-pane>
                 <el-tab-pane label="精华" name="essence">
                     <el-table :data="tableData" stripe style="width: 100%">
@@ -74,7 +74,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-pagination class="pagination" background layout="prev, pager, next" :total="total3" :page-size="1" :current-page.sync="currentPage3" @current-change="getData(3)"></el-pagination>
+                    <el-pagination class="pagination" background layout="prev, pager, next" :total="total3" :page-size="5" :current-page.sync="currentPage3" @current-change="getData(3)"></el-pagination>
                 </el-tab-pane>
             </el-tabs>
             <text-editor :type="1"></text-editor>
@@ -131,7 +131,7 @@ export default {
                 sync.GET("/api/list", {
                         url,
                         page,
-                        pagesize: 1,
+                        pagesize: 5,
                         status: status
                     })
                     .then(data => {
@@ -152,7 +152,7 @@ export default {
                     .catch(err => {
                         this.$message({
                             showClose: true,
-                            message: '服务器错误,请稍后重试!',
+                            message: `服务器错误,请稍后重试! ${err}`,
                             type: 'error'
                         });
                         reject();

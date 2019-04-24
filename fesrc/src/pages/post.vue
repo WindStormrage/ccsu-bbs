@@ -122,7 +122,7 @@
                     </div>
                 </div>
             </div>
-            <el-pagination class="pagination" background layout="prev, pager, next" :total="total" :page-size="1" :current-page.sync="currentPage" @current-change="getData()"></el-pagination>
+            <el-pagination class="pagination" background layout="prev, pager, next" :total="total" :page-size="5" :current-page.sync="currentPage" @current-change="getData()"></el-pagination>
             <text-editor ref="editor" id="editor" :type="2"></text-editor>
         </div>
         <right-msg></right-msg>
@@ -172,7 +172,7 @@ export default {
                 const sync = new Sycn();
                 sync.GET("/api/post", {
                         page: this.currentPage,
-                        pagesize: 1,
+                        pagesize: 5,
                         id,
                     })
                     .then(data => {
@@ -185,7 +185,7 @@ export default {
                     .catch(err => {
                         this.$message({
                             showClose: true,
-                            message: '服务器错误,请稍后重试!',
+                            message: `服务器错误,请稍后重试! ${err}`,
                             type: 'error'
                         });
                         reject();
