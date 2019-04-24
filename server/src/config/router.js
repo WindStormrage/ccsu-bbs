@@ -15,6 +15,7 @@ module.exports = [
   ['/admin/user/put', 'admin/userPut'],
   ['/admin/label/get', 'admin/labelGet'],
   ['/admin/label/put', 'admin/labelPut'],
+  ['/admin/label/add', 'admin/labelAdd'],
   ['/admin/permission/get', 'admin/permissionGet'],
   ['/admin/permission/put', 'admin/permissionPut'],
   ['/admin/list/:url/get', 'admin/listGet'],

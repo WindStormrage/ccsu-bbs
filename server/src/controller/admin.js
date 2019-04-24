@@ -157,6 +157,35 @@ module.exports = class extends Base {
       .update({status});
     return this.success();
   }
+  // 分类管理的add操作
+  async labelAddAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有label的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': 'label'
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    const name = this.post('name');
+    const url = this.post('url');
+    await this.labelModel.add({name, url});
+    await this.permissionModel.add({url: `list/${url}`, name: `帖子管理—${name}`});
+    return this.success();
+  }
   // 获得权限列表
   async permissionGetAction() {
     const userInfo = await this.session('userInfo');
