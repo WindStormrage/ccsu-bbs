@@ -99,15 +99,17 @@ export default {
           const sync = new Sycn();
           sync.GET("/api/home")
             .then(data => {
-                this.data = data.data;
                 // 一行的数量
                 const lineCount = parseInt((document.body.clientWidth - 410) / 440);
-                this.nullCount = data.data.length % lineCount;
+                const showData = data.data.filter(item => item.status === 1);
+                this.nullCount = showData.length % lineCount;
+
+                this.data = showData;
             })
             .catch(err => {
                 this.$message({
                   showClose: true,
-                  message: '服务器错误,请稍后重试!',
+                  message: `服务器错误,请稍后重试!${err}`,
                   type: 'error'
                 });
             });
