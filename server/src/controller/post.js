@@ -166,6 +166,18 @@ module.exports = class extends Base {
       const quotePost = await this.postModel.where({id: quote}).find();
       this.userModel.sendUserMessage(quotePost.user_id, 2, postId);
     }
+    // 在这里添加@提醒
+    const match = content.match(/&lt;@.*?&gt;/g);
+    let userList = [];
+    if (match !== null) {
+      userList = match.map(item => item.substring(5, item.length - 4));
+    }
+    for (const user of userList) {
+      const userId = await this.userModel.where({name: user}).field('id').find();
+      if (!think.isEmpty(userId)) {
+        this.userModel.sendUserMessage(userId.id, 1, postId);
+      }
+    }
     return this.success({id});
   }
 };

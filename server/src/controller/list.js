@@ -7,6 +7,7 @@ module.exports = class extends Base {
     this.labelModel = this.model('label');
     this.postModel = this.model('post');
     this.commentModel = this.model('comment');
+    this.userModel = this.model('user');
   }
   // 分页,精华的筛选
   async getAction() {
@@ -109,6 +110,18 @@ module.exports = class extends Base {
         create_at: date,
         update_at: date
       });
+    // 在这里添加@提醒
+    const match = content.match(/&lt;@.*?&gt;/g);
+    let userList = [];
+    if (match !== null) {
+      userList = match.map(item => item.substring(5, item.length - 4));
+    }
+    for (const user of userList) {
+      const userId = await this.userModel.where({name: user}).field('id').find();
+      if (!think.isEmpty(userId)) {
+        this.userModel.sendUserMessage(userId.id, 1, id);
+      }
+    }
     return this.success({id});
   }
 };
