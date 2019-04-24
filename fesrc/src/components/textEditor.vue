@@ -44,6 +44,13 @@
       margin-right: 20px;
     }
   }
+  .customBar {
+    position: absolute;
+    left: 360px;
+    bottom: 307px;
+    font-size: 20px;
+    cursor: pointer;
+  }
 }
 </style>
 <template>
@@ -56,11 +63,14 @@
       <label class="label">标题</label>
       <el-input class="input" v-model="title" placeholder="请输入标题"></el-input>
     </div>
+    <div class="customBar">
+      <p id="custom-button" @click="remind">＠</p>
+    </div>
     <quill-editor
       v-model="content"
       ref="myQuillEditor"
-      :options="editorOption"
-    ></quill-editor>
+      :options="editorOption">
+    </quill-editor>
     <div class="submit">
       <el-tag
         class="tag"
@@ -98,7 +108,7 @@ export default {
             [{ size: ["small", false, "large"] }],
             ["bold", "italic"],
             [{ list: "ordered" }, { list: "bullet" }],
-            ["link", "image"]
+            ['link', 'image', 'video'],
           ],
           history: {
             delay: 1000,
@@ -216,6 +226,9 @@ export default {
               });
             });
       }
+    },
+    remind() {
+      this.content += '<@用户名>'
     }
   },
 };
