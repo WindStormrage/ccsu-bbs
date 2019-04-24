@@ -34,6 +34,7 @@ const userSetting = r => require.ensure([], () => r(require('./components/user/s
 
 const admin = r => require.ensure([], () => r(require('./pages/admin.vue')), 'admin');
 const adminUser = r => require.ensure([], () => r(require('./components/admin/user.vue')), 'adminUser');
+const adminLabel = r => require.ensure([], () => r(require('./components/admin/label.vue')), 'adminLabel');
 const adminPermission = r => require.ensure([], () => r(require('./components/admin/permission.vue')), 'adminPermission');
 const adminList = r => require.ensure([], () => r(require('./components/admin/list.vue')), 'adminList');
 
@@ -97,6 +98,10 @@ export default new VueRouter({
         {
           path: 'user',
           component: adminUser
+        },
+        {
+          path: 'label',
+          component: adminLabel
         },
         {
           path: 'permission',
