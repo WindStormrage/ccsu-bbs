@@ -7,6 +7,7 @@ module.exports = class extends Base {
     this.permissionModel = this.model('permission');
     this.userPermissionModel = this.model('user_permission');
     this.postModel = this.model('post');
+    this.labelModel = this.model('label');
     this.commentModel = this.model('comment');
   }
   // 判断是否管理员
@@ -96,6 +97,62 @@ module.exports = class extends Base {
     const status = this.get('status');
     const id = this.get('id');
     await this.userModel
+      .where({id})
+      .update({status});
+    return this.success();
+  }
+  // 获得分类列表
+  async labelGetAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有label的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': 'label'
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    const labels = await this.labelModel.select();
+    return this.success(labels);
+  }
+  // 分类管理的put操作
+  async labelPutAction() {
+    const userInfo = await this.session('userInfo');
+    if (think.isEmpty(userInfo)) {
+      return this.fail(1001, '用户未登录,请登录后重试');
+    }
+    // 查看是否拥有label的权限
+    const hadPermission = await this.userPermissionModel
+      .alias('up')
+      .join({
+        table: 'permission',
+        as: 'p',
+        join: 'left',
+        on: ['up.permission_id', 'p.id']
+      })
+      .where({
+        'up.user_id': userInfo.id,
+        'p.url': 'label'
+      })
+      .count();
+    if (hadPermission === 0) {
+      return this.fail(1002, '用户异常操作,没有权限');
+    }
+    const status = this.get('status');
+    const id = this.get('id');
+    await this.labelModel
       .where({id})
       .update({status});
     return this.success();

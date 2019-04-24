@@ -13,6 +13,8 @@ module.exports = [
   ['/admin/getMenu', 'admin/getMenu'],
   ['/admin/user/get', 'admin/userGet'],
   ['/admin/user/put', 'admin/userPut'],
+  ['/admin/label/get', 'admin/labelGet'],
+  ['/admin/label/put', 'admin/labelPut'],
   ['/admin/permission/get', 'admin/permissionGet'],
   ['/admin/permission/put', 'admin/permissionPut'],
   ['/admin/list/:url/get', 'admin/listGet'],
