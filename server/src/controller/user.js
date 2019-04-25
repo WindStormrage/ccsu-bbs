@@ -1,5 +1,5 @@
 const Base = require('./base.js');
-const { formatDateTime } = require('./../util/index.js');
+const { formatDateTime, encryption } = require('./../util/index.js');
 const checkCCSU = require('./../util/checkCCSU.js');
 
 module.exports = class extends Base {
@@ -17,7 +17,7 @@ module.exports = class extends Base {
     let userInfo = await this.userModel
       .where({
         name: data.name,
-        password: data.pass
+        password: encryption(data.pass)
       })
       .find();
     if (think.isEmpty(userInfo)) {
@@ -88,7 +88,7 @@ module.exports = class extends Base {
       avatar: 'http://123.207.39.128:8080/upload/file/ca37bac437e20a6d71d3fdc51e5c00fa',
       uid: new Date().getTime(),
       name: data.name,
-      password: data.pass,
+      password: encryption(data.pass),
       sid: data.sid,
       // data.sPass,
       real_name: student,
