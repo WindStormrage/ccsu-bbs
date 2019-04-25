@@ -47,7 +47,8 @@ module.exports = class extends Base {
     // 先看邮件验证码对不对
     const promise1 = this.cache(data.email);
     // 然后看学号密码对应的上吗
-    const promise2 = checkCCSU({USERNAME: data.sid, PASSWORD: data.sPass});
+    // const promise2 = checkCCSU({USERNAME: data.sid, PASSWORD: data.sPass});
+    const promise2 = Promise.resolve();
     // 然后看学号是否注册过了
     const promise3 = this.userModel
       .where({
@@ -70,9 +71,9 @@ module.exports = class extends Base {
     if (code !== data.verification) {
       return this.fail(1001, '邮箱验证码错误，请输入正确的验证码');
     }
-    if (student.length !== 2 && student.length !== 3) {
-      return this.fail(1002, '教务系统验证错误，请输入正确的学号或密码');
-    }
+    // if (student.length !== 2 && student.length !== 3) {
+    //   return this.fail(1002, '教务系统验证错误，请输入正确的学号或密码');
+    // }
     if (countSid !== 0) {
       return this.fail(1003, '学号有重复，此学号已经注册过用户');
     }

@@ -11,5 +11,5 @@ module.exports = {
       }),
     ]
   },
-  // baseUrl: '/static/',
+  baseUrl: '/static/',
 }
