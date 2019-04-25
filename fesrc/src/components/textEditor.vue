@@ -190,7 +190,7 @@ export default {
             .catch(err => {
               this.$message({
                 showClose: true,
-                message: '服务器错误,请稍后重试!',
+                message: '服务器错误,请稍后重试!'+ err,
                 type: 'error'
               });
             });
@@ -221,7 +221,7 @@ export default {
             .catch(err => {
               this.$message({
                 showClose: true,
-                message: '服务器错误,请稍后重试!',
+                message: '服务器错误,请稍后重试!'+ err,
                 type: 'error'
               });
             });
