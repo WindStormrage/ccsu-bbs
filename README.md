@@ -27,6 +27,8 @@ npm run build
 
 5. 修改后端路由(接口前面加上/api,加上所有页面的路由)
 
+6. 部署的时候就把代码拷过去,把旧代码删了,`runtime`里面的东西作合并处理,除了`node_modules`,如果加了新的模块就`npm i`一下,然后`ps ax`找到对应进程的`pid`然后`kill`掉然后先试试`node production.js`看看部署成功了吗,可以的话就`nohup node production.js &`就完成部署了
+
 然后就部署成功了
 #### 可能出现的问题
 * 后端路由错误
