@@ -58,7 +58,7 @@
                     <div class="title" @click="$router.push(`/list/${label.url}`)">
                         <div class="msg">
                             <h1>{{label.name}}</h1>
-                            <p>帖子数：{{label.postCount}}人  跟帖数：{{label.participationCount}}帖</p>
+                            <p>帖子数：{{label.postCount}}帖  跟帖数：{{label.participationCount}}帖</p>
                         </div>
                         <img src="./../assets/right.png">
                     </div>

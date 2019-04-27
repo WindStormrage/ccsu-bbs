@@ -42,7 +42,7 @@
             <p>热烈庆祝ccsuBBS正式上线</p>
         </div>
         <div class="box">
-            <h1>消息公告</h1>
+            <h1>关于我们</h1>
             <hr>
             <p>
                 <span>本站简介</span>
